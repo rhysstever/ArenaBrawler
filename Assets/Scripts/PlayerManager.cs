@@ -4,19 +4,37 @@ using UnityEngine;
 
 public enum ClassType
 {
-    Swordsperson, 
+    Gladiator, 
     Brawler
 }
 
 public class PlayerManager : MonoBehaviour
 {
+    #region Singleton Code
+    // A public reference to this script
+    public static PlayerManager instance = null;
+
+    // Awake is called even before start 
+    // (I think its at the very beginning of runtime)
+    private void Awake()
+    {
+        // If the reference for this script is null, assign it this script.
+        // If the reference is to something else (it already exists)
+        // than this is not needed, thus destroy it
+        if(instance == null)
+            instance = this;
+        else if(instance != this)
+            Destroy(gameObject);
+    }
+    #endregion
+
     public GameObject player;
-    public Dictionary<ClassType, CharacterClass> characterClasses;
+    public Dictionary<ClassType, CharacterClass> classBaseStats;
 
     // Start is called before the first frame update
     void Start()
     {
-        SetClassDictionary();
+        SetBaseClassStats();
     }
 
     // Update is called once per frame
@@ -25,16 +43,19 @@ public class PlayerManager : MonoBehaviour
         
     }
 
-    private void SetClassDictionary()
+    /// <summary>
+    /// Prep the base stats of each class
+    /// </summary>
+    private void SetBaseClassStats()
 	{
-        characterClasses = new Dictionary<ClassType, CharacterClass>();
+        classBaseStats = new Dictionary<ClassType, CharacterClass>();
 
         // Test values
-        CharacterClass swordsperson = new CharacterClass(10, 1, 2, 3, 4, 5, 6, 7);
+        CharacterClass gladiator = new CharacterClass(10, 1, 2, 3, 4, 5, 6, 7);
         CharacterClass brawler = new CharacterClass(10, 1, 2, 3, 4, 5, 6, 7);
 
-        characterClasses.Add(ClassType.Swordsperson, swordsperson);
-        characterClasses.Add(ClassType.Brawler, brawler);
+        classBaseStats.Add(ClassType.Gladiator, gladiator);
+        classBaseStats.Add(ClassType.Brawler, brawler);
     }
 
     /// <summary>
@@ -43,6 +64,6 @@ public class PlayerManager : MonoBehaviour
     /// <param name="classType">The new class of the player</param>
     public void SetClass(ClassType classType)
 	{
-        player.GetComponent<PlayerInfo>().characterClass = characterClasses[classType];
+        player.GetComponent<PlayerInfo>().characterClass = classBaseStats[classType];
 	}
 }
