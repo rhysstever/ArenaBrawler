@@ -5,7 +5,7 @@ using UnityEngine;
 public enum MenuState
 {
     MainMenu, 
-    CharacterSelect,
+    Select,
     Game,
     Pause,
     GameOver
@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    private MenuState currentMenuState;
+    public MenuState currentMenuState;
 
 	// Start is called before the first frame update
 	void Start()
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
         {
             case MenuState.MainMenu:
                 break;
-            case MenuState.CharacterSelect:
+            case MenuState.Select:
                 break;
             case MenuState.Game:
                 break;
@@ -67,5 +67,9 @@ public class GameManager : MonoBehaviour
             case MenuState.GameOver:
                 break;
         }
-	}
+
+        // Update UI
+        UIManager.instance.UpdateMenuStateUI(currentMenuState);
+
+    }
 }
