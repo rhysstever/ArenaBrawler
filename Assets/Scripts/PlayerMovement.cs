@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerBaseMovement = GetComponent<PlayerInfo>().characterClass.Movement;
+        //playerBaseMovement = GetComponent<PlayerInfo>().characterClass.Movement;
         Debug.Log(playerBaseMovement);
     }
 
