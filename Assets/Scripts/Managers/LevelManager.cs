@@ -99,25 +99,48 @@ public class LevelManager : MonoBehaviour
     /// <param name="levelUpClass">The class that the player is leveling into</param>
     public void LevelUp(ClassType levelUpClass)
 	{
-        // If the player has at least 1 level in that
-        // class already, the level is increased
+        // If the player has leveled that class already
 		if(levels.ContainsKey(levelUpClass))
 		{
+            // Increases the level of that class
             levels[levelUpClass]++;
-		}
-        // If the player does not have a level in that class,
-        // a new value of the dictionary is created, with 1 level of it
-		else
+
+            // Add the leveling stats of the class to the player
+            // (the player already received base stats from their initial class)
+
+            // TODO: Get player script and add each leveling modifier stat
+            // Ex: player.statName *= 1 + classStats[levelUpClass].levelMultiplierStatName; <-- do this for each stat (replacing "statName")
+        }
+        // If the player does not have a level in that class
+        else
 		{
+            if(GetTotalPlayerLevel() > 0)
+			{
+                // Add the leveling stats of the class to the player
+                // (the player already received base stats from their initial class)
+
+                // TODO: Get player script and add each leveling modifier stat
+                // Ex: player.statName *= 1 + classStats[levelUpClass].levelMultiplierStatName; <-- do this for each stat (replacing "statName")
+            }
+            else
+			{
+                // Add the base stats of the class to the player
+                // (it is the first total level of the player)
+
+                // TODO: Get player script and add each base stat
+                // Ex: player.statName = classStats[levelUpClass].baseStatName; <-- do this for each stat (replacing "statName")
+            }
+
+            // Adds that class to the player's levels, setting it at level 1
             levels.Add(levelUpClass, 1);
 		}
 	}
 
     /// <summary>
-    /// Gets the number of levels the player has
+    /// Gets the total number of levels the player has
     /// </summary>
     /// <returns>The total number of levels</returns>
-    public int GetPlayerLevel()
+    public int GetTotalPlayerLevel()
 	{
         int levelCount = 0;
         // Sums the levels of each class of the player
