@@ -36,7 +36,7 @@ public class UIManager : MonoBehaviour
     private GameObject selectCharacterButton;
 
     [SerializeField]    // Pause Buttons
-    private GameObject resumeButton, pauseToMainMenuButton;
+    private GameObject resumeButton, saveButton, pauseToMainMenuButton;
 
     [SerializeField]    // Game Over Buttons
     private GameObject gameOverToMainMenuButton;
@@ -74,6 +74,7 @@ public class UIManager : MonoBehaviour
         selectCharacterButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
         // Pause buttons
         resumeButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
+        saveButton.GetComponent<Button>().onClick.AddListener(() => LoadingManager.instance.CreateSave());
         pauseToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
         // Game Over buttons
         gameOverToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));

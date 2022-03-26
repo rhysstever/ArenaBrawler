@@ -5,6 +5,24 @@ using UnityEngine;
 
 public class LoadingManager : MonoBehaviour
 {
+    #region Singleton Code
+    // A public reference to this script
+    public static LoadingManager instance = null;
+
+    // Awake is called even before start 
+    // (I think its at the very beginning of runtime)
+    private void Awake()
+    {
+        // If the reference for this script is null, assign it this script
+        if(instance == null)
+            instance = this;
+        // If the reference is to something else (it already exists)
+        // than this is not needed, thus destroy it
+        else if(instance != this)
+            Destroy(gameObject);
+    }
+    #endregion
+
     private Save newSave;
     private string localSaveFolderPath;
 
@@ -12,8 +30,6 @@ public class LoadingManager : MonoBehaviour
     void Start()
     {
         localSaveFolderPath = "Assets/Resources/SaveData/";
-        CreateSave();
-        SetLoadedData(LoadSave("Chungus"));
     }
 
     // Update is called once per frame
