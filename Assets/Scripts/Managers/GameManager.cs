@@ -6,6 +6,7 @@ public enum MenuState
 {
     MainMenu, 
     Select,
+    CharacterCreate,
     Game,
     Pause,
     GameOver
@@ -68,6 +69,8 @@ public class GameManager : MonoBehaviour
             case MenuState.MainMenu:
                 break;
             case MenuState.Select:
+                break;
+            case MenuState.CharacterCreate:
                 break;
             case MenuState.Game:
                 break;

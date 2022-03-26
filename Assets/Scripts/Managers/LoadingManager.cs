@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ public class LoadingManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        localSaveFolderPath = "Assets/Resources/SaveData/";
+        localSaveFolderPath = "Assets/Resources/SavedCharacters/";
     }
 
     // Update is called once per frame
@@ -48,17 +49,10 @@ public class LoadingManager : MonoBehaviour
 
         // Set values of data that will be saved
         newSave.name = LevelManager.instance.characterName;
-
-        List<ClassType> levels = LevelManager.instance.GetLevels();
-
-        string levelsStr = "";
-        foreach (ClassType level in levels)
-            levelsStr += level + ", ";
-
-        newSave.levels = levelsStr;
+        newSave.classLevels = LevelManager.instance.GetLevels();
 
         // Turn the Save object into a json string and save it
-        string savedDataStr = JsonUtility.ToJson(newSave);
+        string savedDataStr = JsonConvert.SerializeObject(newSave);
         System.IO.File.WriteAllText(localSaveFolderPath + LevelManager.instance.characterName + ".json", savedDataStr);
     }
 
@@ -77,25 +71,21 @@ public class LoadingManager : MonoBehaviour
         string loadedDataStr = System.IO.File.ReadAllText(localSaveFolderPath + characterName + ".json");
 
         // Convert the json string into a Save object 
-        return JsonUtility.FromJson<Save>(loadedDataStr);
+        return JsonConvert.DeserializeObject<Save>(loadedDataStr);
     }
 
     /// <summary>
     /// Converts the Save object to game values
     /// </summary>
     /// <param name="loadedSave">The Save object of the loaded save file</param>
-    private void SetLoadedData(Save loadedSave)
+    public void SetLoadedData(Save loadedSave)
 	{
         // Set saved data as game values
         LevelManager.instance.characterName = loadedSave.name;
         // Reset the current character
         LevelManager.instance.ResetLevels();
         // Level the character in order of the saved classes
-        string[] levelBreakdown = loadedSave.levels.Split(',');
-        foreach(string level in levelBreakdown)
-		{
-            if(Enum.TryParse(level, out ClassType classLevel))
-                LevelManager.instance.LevelUp(classLevel);
-		}
+        foreach(ClassType level in loadedSave.classLevels)
+            LevelManager.instance.LevelUp(level);
     }
 }

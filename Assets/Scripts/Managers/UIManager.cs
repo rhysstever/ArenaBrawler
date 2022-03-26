@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,13 +29,22 @@ public class UIManager : MonoBehaviour
     private Canvas canvas;
 
     [SerializeField]    // Empty parent gameObjects
-    private GameObject mainMenuParent, selectParent, gameParent, pauseParent, gameOverParent;
+    private GameObject mainMenuParent, selectParent, createCharacterParent, gameParent, pauseParent, gameOverParent;
 
     [SerializeField]    // Main Menu Buttons
     private GameObject playButton, quitButton;
 
     [SerializeField]    // Select Buttons
-    private GameObject selectCharacterButton;
+    private GameObject selectCharacterButton, newCharacterButton;
+
+    [SerializeField]    // Create Character Buttons
+    private GameObject createCharacterButton;
+
+    [SerializeField]    // Create Character Inputs
+    private GameObject characterNameTextInput, characterClassTogglesParent;
+
+    [SerializeField]    // Game Text
+    private GameObject characterName;
 
     [SerializeField]    // Pause Buttons
     private GameObject resumeButton, saveButton, pauseToMainMenuButton;
@@ -44,7 +55,7 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetupOnClicks();
+        SetupUpUI();
     }
 
     // Update is called once per frame
@@ -65,13 +76,19 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Setups up button onClicks
     /// </summary>
-    private void SetupOnClicks()
+    private void SetupUpUI()
 	{
         // Main Menu buttons
         playButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Select));
         quitButton.GetComponent<Button>().onClick.AddListener(() => Application.Quit());
         // Select buttons        
         selectCharacterButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
+        newCharacterButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.CharacterCreate));
+        // Character Create toggles
+        foreach(Transform toggleTransform in characterClassTogglesParent.transform)
+            toggleTransform.GetComponent<Toggle>().onValueChanged.AddListener((bool value) => ToggleValueChange(toggleTransform.gameObject, value));
+        // Character Create buttons
+        createCharacterButton.GetComponent<Button>().onClick.AddListener(() => CreateNewCharacterButtonClicked());
         // Pause buttons
         resumeButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
         saveButton.GetComponent<Button>().onClick.AddListener(() => LoadingManager.instance.CreateSave());
@@ -99,7 +116,11 @@ public class UIManager : MonoBehaviour
             case MenuState.Select:
                 selectParent.SetActive(true);
                 break;
+            case MenuState.CharacterCreate:
+                createCharacterParent.SetActive(true);
+                break;
             case MenuState.Game:
+                characterName.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.characterName;
                 gameParent.SetActive(true);
                 break;
             case MenuState.Pause:
@@ -109,5 +130,60 @@ public class UIManager : MonoBehaviour
                 gameOverParent.SetActive(true);
                 break;
         }
+    }
+
+    private void ToggleValueChange(GameObject toggleClicked, bool toggleValue)
+    {
+        // Set the toggle based on the newValue
+        toggleClicked.GetComponent<Toggle>().isOn = toggleValue;
+
+        // If the toggle is now on, it loops through all other toggles and detoggles them
+        if(toggleValue)
+            foreach(Transform toggleTransform in characterClassTogglesParent.transform)
+                if(toggleTransform.gameObject != toggleClicked)
+                    toggleTransform.GetComponent<Toggle>().isOn = false;
+    }
+
+    /// <summary>
+    /// Gets the inputted information to created a new character
+    /// </summary>
+    private void CreateNewCharacterButtonClicked()
+	{
+        if(!HasEnteredEnoughInput())
+		{
+            Debug.Log("You must enter a character name and select a class!");
+            return;
+		}
+
+        // Set the character name
+        LevelManager.instance.characterName = characterNameTextInput.GetComponent<TMP_InputField>().text;
+
+        // Level up the character based on the class they selected
+        foreach(Transform toggleTransform in characterClassTogglesParent.transform)
+            if(toggleTransform.GetComponent<Toggle>().isOn)
+                if(Enum.TryParse(toggleTransform.gameObject.name.Substring(11), out ClassType classLevel))
+                    LevelManager.instance.LevelUp(classLevel);
+
+        // Set the menu state to game
+        GameManager.instance.ChangeMenuState(MenuState.Game);
+    }
+
+    /// <summary>
+    /// Checks if the player has entered enough input to create a character
+    /// </summary>
+    /// <returns>Whether there is enough input entered</returns>
+    private bool HasEnteredEnoughInput()
+	{
+        // If there is no name entered, return false
+        if(characterNameTextInput.GetComponent<TMP_InputField>().text == "")
+            return false;
+
+        // If a class is selected, return true
+        foreach(Transform toggleTransform in characterClassTogglesParent.transform)
+            if(toggleTransform.GetComponent<Toggle>().isOn)
+                return true;
+
+        // If no class is selected, return false
+        return false;
     }
 }

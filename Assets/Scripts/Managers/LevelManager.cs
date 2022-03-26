@@ -32,12 +32,6 @@ public class LevelManager : MonoBehaviour
     {
         levels = new List<ClassType>();
         FillClassStatsDictionary();
-
-        // Testing "creating a character"
-        characterName = "Chungus";
-        LevelUp(ClassType.Brawler);
-        LevelUp(ClassType.Gladiator);
-        LevelUp(ClassType.Brawler);
     }
 
     // Update is called once per frame

@@ -7,5 +7,5 @@ using UnityEngine;
 public class Save
 {
 	public string name;
-	public string levels;
+	public List<ClassType> classLevels;
 }
