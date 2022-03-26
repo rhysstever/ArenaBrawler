@@ -22,16 +22,21 @@ public class LevelManager : MonoBehaviour
     }
     #endregion
 
-    private Dictionary<ClassType, int> levels;
+    public string characterName;
+
+    private List<ClassType> levels;
     private Dictionary<ClassType, ClassStats> classStats;
 
     // Start is called before the first frame update
     void Start()
     {
-        levels = new Dictionary<ClassType, int>();
+        levels = new List<ClassType>();
         FillClassStatsDictionary();
 
-        // Testing levelup 
+        // Testing "creating a character"
+        characterName = "Chungus";
+        LevelUp(ClassType.Brawler);
+        LevelUp(ClassType.Gladiator);
         LevelUp(ClassType.Brawler);
     }
 
@@ -99,12 +104,9 @@ public class LevelManager : MonoBehaviour
     /// <param name="levelUpClass">The class that the player is leveling into</param>
     public void LevelUp(ClassType levelUpClass)
 	{
-        // If the player has leveled that class already
-		if(levels.ContainsKey(levelUpClass))
+        // If the player has levels aleady
+		if(levels.Count > 0)
 		{
-            // Increases the level of that class
-            levels[levelUpClass]++;
-
             // Add the leveling stats of the class to the player
             // (the player already received base stats from their initial class)
 
@@ -114,43 +116,33 @@ public class LevelManager : MonoBehaviour
         // If the player does not have a level in that class
         else
 		{
-            if(GetTotalPlayerLevel() > 0)
-			{
-                // Add the leveling stats of the class to the player
-                // (the player already received base stats from their initial class)
+            // Add the base stats of the class to the player
+            // (it is the first total level of the player)
 
-                // TODO: Get player script and add each leveling modifier stat
-                // Ex: player.statName *= 1 + classStats[levelUpClass].levelMultiplierStatName; <-- do this for each stat (replacing "statName")
-            }
-            else
-			{
-                // Add the base stats of the class to the player
-                // (it is the first total level of the player)
-
-                // TODO: Get player script and add each base stat
-                // Ex: player.statName = classStats[levelUpClass].baseStatName; <-- do this for each stat (replacing "statName")
-            }
-
-            // Adds that class to the player's levels, setting it at level 1
-            levels.Add(levelUpClass, 1);
+            // TODO: Get player script and add each base stat
+            // Ex: player.statName = classStats[levelUpClass].baseStatName; <-- do this for each stat (replacing "statName")
 		}
+        
+        // Adds that class to the player's levels, setting it at level 1
+        levels.Add(levelUpClass);
 	}
 
     /// <summary>
-    /// Gets the total number of levels the player has
+    /// Gets the levels/classes of the character
     /// </summary>
-    /// <returns>The total number of levels</returns>
-    public int GetTotalPlayerLevel()
+    /// <returns>The list of classes of the current character</returns>
+    public List<ClassType> GetLevels()
 	{
-        int levelCount = 0;
-        // Sums the levels of each class of the player
-        foreach(ClassType levelUpClass in levels.Keys)
-		{
-            levelCount += levels[levelUpClass];
-		}
-
-        return levelCount;  
+        return levels;  
 	}
+
+    /// <summary>
+    /// Clears the levels list
+    /// </summary>
+    public void ResetLevels()
+	{
+        levels.Clear();
+    }
 }
 
 public struct ClassStats
