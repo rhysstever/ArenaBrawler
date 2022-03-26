@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -28,22 +29,54 @@ public class UIManager : MonoBehaviour
     [SerializeField]    // Empty parent gameObjects
     private GameObject mainMenuParent, selectParent, gameParent, pauseParent, gameOverParent;
 
+    [SerializeField]    // Main Menu Buttons
+    private GameObject playButton, quitButton;
+
+    [SerializeField]    // Select Buttons
+    private GameObject selectCharacterButton;
+
+    [SerializeField]    // Pause Buttons
+    private GameObject resumeButton, pauseToMainMenuButton;
+
+    [SerializeField]    // Game Over Buttons
+    private GameObject gameOverToMainMenuButton;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        SetupOnClicks();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Temporary way to advance menu states
-        if(Input.GetKeyDown(KeyCode.Return))
+        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game)
 		{
-            int currentMenuStateNum = (int)GameManager.instance.currentMenuState;
-            currentMenuStateNum++;
-            GameManager.instance.ChangeMenuState((MenuState)currentMenuStateNum);
-		}
+            // When in the game, controls: 
+            // Esc:     Opens pause menu
+            // Tab:     Ends the game
+            if(Input.GetKeyDown(KeyCode.Escape))
+                GameManager.instance.ChangeMenuState(MenuState.Pause);
+            else if(Input.GetKeyDown(KeyCode.Tab))
+                GameManager.instance.ChangeMenuState(MenuState.GameOver);
+        }
+    }
+
+    /// <summary>
+    /// Setups up button onClicks
+    /// </summary>
+    private void SetupOnClicks()
+	{
+        // Main Menu buttons
+        playButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Select));
+        quitButton.GetComponent<Button>().onClick.AddListener(() => Application.Quit());
+        // Select buttons        
+        selectCharacterButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
+        // Pause buttons
+        resumeButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
+        pauseToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
+        // Game Over buttons
+        gameOverToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
     }
 
     /// <summary>

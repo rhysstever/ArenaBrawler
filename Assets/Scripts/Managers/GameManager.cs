@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    public MenuState currentMenuState;
+    private MenuState currentMenuState;
 
 	// Start is called before the first frame update
 	void Start()
@@ -45,6 +45,15 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    /// <summary>
+    /// Gets the current menu state
+    /// </summary>
+    /// <returns>The current menu state</returns>
+    public MenuState GetCurrentMenuState()
+	{
+        return currentMenuState;
+	}
 
     /// <summary>
     /// Performs initial logic when the menuState changes
@@ -70,6 +79,5 @@ public class GameManager : MonoBehaviour
 
         // Update UI
         UIManager.instance.UpdateMenuStateUI(currentMenuState);
-
     }
 }
