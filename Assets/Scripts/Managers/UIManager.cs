@@ -137,6 +137,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates a button for each saved character
+    /// </summary>
     private void CreateSavedCharacterButtons()
 	{
         ClearSavedCharacterButtons();
@@ -145,11 +148,14 @@ public class UIManager : MonoBehaviour
         DirectoryInfo dataFolder = new DirectoryInfo(LoadingManager.instance.GetLocalSavePath());
         FileInfo[] dataFiles = dataFolder.GetFiles("*.json");
 
+        // Initial and the change in y-value for each button created
         float yPos = 50.0f;
         float deltaY = -50.0f;
 
+        // Loop through each saved file
         foreach(FileInfo file in dataFiles)
 		{
+            // Create the actual button
             GameObject savedCharacterButton = Instantiate(savedCharacterButtonPrefab, savedCharacterButtonsParent.transform);
 
             yPos += deltaY;
@@ -164,10 +170,21 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Clears all load character buttons
+    /// </summary>
     private void ClearSavedCharacterButtons()
 	{
+        List<GameObject> characterButtonsToBeDestroyed = new List<GameObject>();
 
-	}
+        // Delete any children buttons in the parent
+        foreach(Transform savedCharacterButtonTrans in savedCharacterButtonsParent.transform)
+            characterButtonsToBeDestroyed.Add(savedCharacterButtonTrans.gameObject);
+
+        // Destroy() is too slow (the new buttons are being created immediately after
+        for(int i = characterButtonsToBeDestroyed.Count - 1; i >= 0; i--)
+            DestroyImmediate(characterButtonsToBeDestroyed[i]);
+    }
 
     /// <summary>
     /// Performs logic for when a toggle is clicked (for either toggle on or off)

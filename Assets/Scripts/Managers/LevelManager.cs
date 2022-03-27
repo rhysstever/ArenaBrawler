@@ -56,14 +56,14 @@ public class LevelManager : MonoBehaviour
         // Create a struct for each levelable rpg class
         ClassStats gladiatorStats = new ClassStats()
         {
-            baseHealth = 0,
-            baseHealthRegen = 0,
-            baseMovement = 0,
-            baseDefense = 0,
-            baseDamage = 0,
-            baseAttackSpeed = 0,
-            baseStamina = 0,
-            baseStaminaRegen = 0,
+            baseHealth = 20,
+            baseHealthRegen = 1,
+            baseMovement = 5,
+            baseDefense = 5,
+            baseDamage = 2,
+            baseAttackSpeed = 3,
+            baseStamina = 10,
+            baseStaminaRegen = 1,
             levelMultiplierHealth = 0,
             levelMultiplierHealthRegen = 0,
             levelMultiplierMovement = 0,
@@ -75,14 +75,14 @@ public class LevelManager : MonoBehaviour
         };
         ClassStats brawlerStats = new ClassStats()
         {
-            baseHealth = 0,
-            baseHealthRegen = 0,
-            baseMovement = 0,
-            baseDefense = 0,
-            baseDamage = 0,
-            baseAttackSpeed = 0,
-            baseStamina = 0,
-            baseStaminaRegen = 0,
+            baseHealth = 10,
+            baseHealthRegen = 2,
+            baseMovement = 7,
+            baseDefense = 2,
+            baseDamage = 1,
+            baseAttackSpeed = 6,
+            baseStamina = 20,
+            baseStaminaRegen = 2,
             levelMultiplierHealth = 0,
             levelMultiplierHealthRegen = 0,
             levelMultiplierMovement = 0,
@@ -104,25 +104,17 @@ public class LevelManager : MonoBehaviour
     /// <param name="levelUpClass">The class that the player is leveling into</param>
     public void LevelUp(ClassType levelUpClass)
 	{
-        // If the player has levels aleady
-		if(levels.Count > 0)
-		{
-            // Add the leveling stats of the class to the player
-            // (the player already received base stats from their initial class)
-
-            // TODO: Get player script and add each leveling modifier stat
-            // Ex: player.statName *= 1 + classStats[levelUpClass].levelMultiplierStatName; <-- do this for each stat (replacing "statName")
-        }
-        // If the player does not have a level in that class
+        // If the player has levels aleady,
+        // Add the leveling stats of the class to the player
+        // (the player already received base stats from their initial class)
+        if(levels.Count > 0)
+            PlayerManager.instance.SetupStats(classStats[levelUpClass], false);
+        // If the player does not have a level in that class,
+        // Add the base stats of the class to the player
+        // (it is the first total level of the player)
         else
-		{
-            // Add the base stats of the class to the player
-            // (it is the first total level of the player)
+            PlayerManager.instance.SetupStats(classStats[levelUpClass], true);
 
-            // TODO: Get player script and add each base stat
-            // Ex: player.statName = classStats[levelUpClass].baseStatName; <-- do this for each stat (replacing "statName")
-		}
-        
         // Adds that class to the player's levels, setting it at level 1
         levels.Add(levelUpClass);
 	}
