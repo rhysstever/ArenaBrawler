@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ClassType
+{
+    Gladiator,
+    Brawler
+}
+
 public class LevelManager : MonoBehaviour
 {
     #region Singleton Code

@@ -25,12 +25,12 @@ public class LoadingManager : MonoBehaviour
     #endregion
 
     private Save newSave;
-    private string localSaveFolderPath;
+    private string localSavePath;
 
     // Start is called before the first frame update
     void Start()
     {
-        localSaveFolderPath = "Assets/Resources/SavedCharacters/";
+        localSavePath = "Assets/Resources/SavedCharacters/";
     }
 
     // Update is called once per frame
@@ -53,22 +53,31 @@ public class LoadingManager : MonoBehaviour
 
         // Turn the Save object into a json string and save it
         string savedDataStr = JsonConvert.SerializeObject(newSave);
-        System.IO.File.WriteAllText(localSaveFolderPath + LevelManager.instance.characterName + ".json", savedDataStr);
+        System.IO.File.WriteAllText(localSavePath + LevelManager.instance.characterName + ".json", savedDataStr);
     }
+
+    /// <summary>
+    /// Gets and sets a saved character's data
+    /// </summary>
+    /// <param name="characterName">The name of the saved character</param>
+    public void LoadSavedCharacter(string characterName)
+	{
+        SetLoadedData(LoadSave(characterName));
+	}
 
     /// <summary>
     /// Loads a character's saved data
     /// </summary>
     /// <param name="characterName">The name of the character</param>
     /// <returns>The save data of that character</returns>
-	public Save LoadSave(string characterName)
+	private Save LoadSave(string characterName)
 	{
         // Check that a save file exists for the character
-        if(!System.IO.File.Exists(localSaveFolderPath + characterName + ".json"))
+        if(!System.IO.File.Exists(localSavePath + characterName + ".json"))
             return null;    // End early if there is no save file
 
         // Find and read the saved json file 
-        string loadedDataStr = System.IO.File.ReadAllText(localSaveFolderPath + characterName + ".json");
+        string loadedDataStr = System.IO.File.ReadAllText(localSavePath + characterName + ".json");
 
         // Convert the json string into a Save object 
         return JsonConvert.DeserializeObject<Save>(loadedDataStr);
@@ -78,7 +87,7 @@ public class LoadingManager : MonoBehaviour
     /// Converts the Save object to game values
     /// </summary>
     /// <param name="loadedSave">The Save object of the loaded save file</param>
-    public void SetLoadedData(Save loadedSave)
+    private void SetLoadedData(Save loadedSave)
 	{
         // Set saved data as game values
         LevelManager.instance.characterName = loadedSave.name;
@@ -88,4 +97,13 @@ public class LoadingManager : MonoBehaviour
         foreach(ClassType level in loadedSave.classLevels)
             LevelManager.instance.LevelUp(level);
     }
+
+    /// <summary>
+    /// A getter helper method for the local save path
+    /// </summary>
+    /// <returns>The local save path</returns>
+    public string GetLocalSavePath()
+	{
+        return localSavePath;
+	}
 }

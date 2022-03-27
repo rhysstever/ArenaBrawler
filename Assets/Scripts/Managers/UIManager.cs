@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,7 +36,10 @@ public class UIManager : MonoBehaviour
     private GameObject playButton, quitButton;
 
     [SerializeField]    // Select Buttons
-    private GameObject selectCharacterButton, newCharacterButton;
+    private GameObject savedCharacterButtonPrefab, selectCharacterButton, newCharacterButton;
+
+    [SerializeField]    // Select empty parent gameObjects
+    private GameObject savedCharacterButtonsParent;
 
     [SerializeField]    // Create Character Buttons
     private GameObject createCharacterButton;
@@ -114,6 +118,7 @@ public class UIManager : MonoBehaviour
                 mainMenuParent.SetActive(true);
                 break;
             case MenuState.Select:
+                CreateSavedCharacterButtons();
                 selectParent.SetActive(true);
                 break;
             case MenuState.CharacterCreate:
@@ -132,6 +137,43 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void CreateSavedCharacterButtons()
+	{
+        ClearSavedCharacterButtons();
+
+        // Get an array of saved character files
+        DirectoryInfo dataFolder = new DirectoryInfo(LoadingManager.instance.GetLocalSavePath());
+        FileInfo[] dataFiles = dataFolder.GetFiles("*.json");
+
+        float yPos = 50.0f;
+        float deltaY = -50.0f;
+
+        foreach(FileInfo file in dataFiles)
+		{
+            GameObject savedCharacterButton = Instantiate(savedCharacterButtonPrefab, savedCharacterButtonsParent.transform);
+
+            yPos += deltaY;
+            savedCharacterButton.transform.localPosition = new Vector3(0.0f, yPos, 0.0f);
+            // Get the name of the character
+            string trimmedName = Path.ChangeExtension(file.Name, null);
+            savedCharacterButton.name = trimmedName;
+            // Set the text of the button
+            savedCharacterButton.transform.GetChild(0).GetComponent<TMP_Text>().text = trimmedName;   
+            // Set the onClick
+            savedCharacterButton.GetComponent<Button>().onClick.AddListener(() => LoadingManager.instance.LoadSavedCharacter(trimmedName));
+        }
+    }
+
+    private void ClearSavedCharacterButtons()
+	{
+
+	}
+
+    /// <summary>
+    /// Performs logic for when a toggle is clicked (for either toggle on or off)
+    /// </summary>
+    /// <param name="toggleClicked">The toggle game object that was toggled</param>
+    /// <param name="toggleValue">The value the toggle is currently</param>
     private void ToggleValueChange(GameObject toggleClicked, bool toggleValue)
     {
         // Set the toggle based on the newValue
