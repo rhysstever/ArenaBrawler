@@ -28,22 +28,20 @@ public class LevelManager : MonoBehaviour
     }
     #endregion
 
-    public string characterName;
-
-    private List<ClassType> levels;
-    private Dictionary<ClassType, ClassStats> classStats;
+    public GameObject player;
+    public Dictionary<ClassType, ClassStats> classStats;
 
     // Start is called before the first frame update
     void Start()
     {
-        levels = new List<ClassType>();
         FillClassStatsDictionary();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.Space))
+            player.GetComponent<Player>().TakeDamage(1.0f);
     }
 
     /// <summary>
@@ -96,44 +94,6 @@ public class LevelManager : MonoBehaviour
         // Add each struct to the dictionary
         classStats.Add(ClassType.Gladiator, gladiatorStats);
         classStats.Add(ClassType.Brawler, brawlerStats);
-    }
-
-    /// <summary>
-    /// Adds a level to the player
-    /// </summary>
-    /// <param name="levelUpClass">The class that the player is leveling into</param>
-    public void LevelUp(ClassType levelUpClass)
-	{
-        // If the player has levels aleady,
-        // Add the leveling stats of the class to the player
-        // (the player already received base stats from their initial class)
-        if(levels.Count > 0)
-            PlayerManager.instance.SetupStats(classStats[levelUpClass], false);
-        // If the player does not have a level in that class,
-        // Add the base stats of the class to the player
-        // (it is the first total level of the player)
-        else
-            PlayerManager.instance.SetupStats(classStats[levelUpClass], true);
-
-        // Adds that class to the player's levels, setting it at level 1
-        levels.Add(levelUpClass);
-	}
-
-    /// <summary>
-    /// Gets the levels/classes of the character
-    /// </summary>
-    /// <returns>The list of classes of the current character</returns>
-    public List<ClassType> GetLevels()
-	{
-        return levels;  
-	}
-
-    /// <summary>
-    /// Clears the levels list
-    /// </summary>
-    public void ResetLevels()
-	{
-        levels.Clear();
     }
 }
 

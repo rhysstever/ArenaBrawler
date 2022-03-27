@@ -125,7 +125,7 @@ public class UIManager : MonoBehaviour
                 createCharacterParent.SetActive(true);
                 break;
             case MenuState.Game:
-                characterName.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.characterName;
+                characterName.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.player.GetComponent<Player>().unitName;
                 gameParent.SetActive(true);
                 break;
             case MenuState.Pause:
@@ -215,13 +215,13 @@ public class UIManager : MonoBehaviour
 		}
 
         // Set the character name
-        LevelManager.instance.characterName = characterNameTextInput.GetComponent<TMP_InputField>().text;
+        LevelManager.instance.player.GetComponent<Player>().unitName = characterNameTextInput.GetComponent<TMP_InputField>().text;
 
         // Level up the character based on the class they selected
         foreach(Transform toggleTransform in characterClassTogglesParent.transform)
             if(toggleTransform.GetComponent<Toggle>().isOn)
                 if(Enum.TryParse(toggleTransform.gameObject.name.Substring(11), out ClassType classLevel))
-                    LevelManager.instance.LevelUp(classLevel);
+                    LevelManager.instance.player.GetComponent<Player>().LevelUp(classLevel);
 
         // Set the menu state to game
         GameManager.instance.ChangeMenuState(MenuState.Game);
