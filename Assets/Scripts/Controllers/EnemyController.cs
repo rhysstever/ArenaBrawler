@@ -24,6 +24,12 @@ public class EnemyController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+	private void Update()
+	{
+        // Determine if the enemy can move
+        canMove = GameManager.instance.GetCurrentMenuState() == MenuState.Game;
+    }
+
     private void FixedUpdate()
     {
         distance = Vector2.Distance(transform.position, player.transform.position);
@@ -53,7 +59,7 @@ public class EnemyController : MonoBehaviour
         if (enemyMovementDirection != Vector2.zero)
         {
             //Check for potential collisions
-            int count = rigidbody.Cast(enemyMovementDirection, movementFilter, castCollisions, EnemyManager.instance.movement * Time.fixedDeltaTime);
+            int count = rigidbody.Cast(enemyMovementDirection, movementFilter, castCollisions, GetComponent<Enemy>().movement * Time.fixedDeltaTime);
 
             //If no potential collsions are detected, move the character in the specified direction
             if (count == 0)
@@ -61,7 +67,7 @@ public class EnemyController : MonoBehaviour
                 //Check to see if the enemy can see the player
                 if (distance < enemyViewDistance)
                 {
-                    transform.position = Vector2.MoveTowards(this.transform.position, player.transform.position, EnemyManager.instance.movement * Time.deltaTime);
+                    transform.position = Vector2.MoveTowards(this.transform.position, player.transform.position, GetComponent<Enemy>().movement * Time.deltaTime);
                     //transform.rotation = Quaternion.Euler(Vector3.forward * angle);
                     return true;
                 }

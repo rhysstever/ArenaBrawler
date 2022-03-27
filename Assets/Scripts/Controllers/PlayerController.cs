@@ -25,7 +25,13 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void FixedUpdate()
+	private void Update()
+	{
+        // Determine if the player can move
+        canMove = GameManager.instance.GetCurrentMenuState() == MenuState.Game;
+	}
+
+	private void FixedUpdate()
     {
         if (canMove)
         {
@@ -71,12 +77,12 @@ public class PlayerController : MonoBehaviour
         if (direction != Vector2.zero)
         {
             //Check for potential collisions
-            int count = rigidbody.Cast(direction, movementFilter, castCollisions, LevelManager.instance.player.GetComponent<Player>().movement * Time.fixedDeltaTime + collisionOffset);
+            int count = rigidbody.Cast(direction, movementFilter, castCollisions, GetComponent<Player>().movement * Time.fixedDeltaTime + collisionOffset);
 
             //If no potential collisions are detected, move the character in the specified direction
             if (count == 0)
             {
-                rigidbody.MovePosition(rigidbody.position + direction * LevelManager.instance.player.GetComponent<Player>().movement * Time.fixedDeltaTime);
+                rigidbody.MovePosition(rigidbody.position + direction * GetComponent<Player>().movement * Time.fixedDeltaTime);
                 return true;
             }
             else
