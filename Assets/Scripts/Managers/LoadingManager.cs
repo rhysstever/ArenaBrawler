@@ -48,12 +48,13 @@ public class LoadingManager : MonoBehaviour
         newSave = new Save();
 
         // Set values of data that will be saved
-        newSave.name = LevelManager.instance.characterName;
-        newSave.classLevels = LevelManager.instance.GetLevels();
+        string name = LevelManager.instance.player.GetComponent<Player>().unitName;
+        newSave.name = name;
+        newSave.classLevels = LevelManager.instance.player.GetComponent<Player>().GetLevels();
 
         // Turn the Save object into a json string and save it
         string savedDataStr = JsonConvert.SerializeObject(newSave);
-        System.IO.File.WriteAllText(localSavePath + LevelManager.instance.characterName + ".json", savedDataStr);
+        System.IO.File.WriteAllText(localSavePath + name + ".json", savedDataStr);
     }
 
     /// <summary>
@@ -90,12 +91,12 @@ public class LoadingManager : MonoBehaviour
     private void SetLoadedData(Save loadedSave)
 	{
         // Set saved data as game values
-        LevelManager.instance.characterName = loadedSave.name;
+        LevelManager.instance.player.GetComponent<Player>().unitName = loadedSave.name;
         // Reset the current character
-        LevelManager.instance.ResetLevels();
+        LevelManager.instance.player.GetComponent<Player>().ResetLevels();
         // Level the character in order of the saved classes
         foreach(ClassType level in loadedSave.classLevels)
-            LevelManager.instance.LevelUp(level);
+            LevelManager.instance.player.GetComponent<Player>().LevelUp(level);
     }
 
     /// <summary>

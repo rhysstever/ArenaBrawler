@@ -2301,7 +2301,6 @@ GameObject:
   - component: {fileID: 992858289}
   - component: {fileID: 992858288}
   - component: {fileID: 992858287}
-  - component: {fileID: 992858291}
   - component: {fileID: 992858286}
   m_Layer: 0
   m_Name: gameManager
@@ -2367,7 +2366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca9006a9e9592d428720e1312aa9f9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterName: 
+  player: {fileID: 2037281892}
 --- !u!114 &992858289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2395,26 +2394,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &992858291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 992858285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad20e5f89ea8a2b419a374f03217739b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 0
-  healthRegen: 0
-  movement: 0
-  defense: 0
-  damage: 0
-  attackSpeed: 0
-  stamina: 0
-  staminaRegen: 0
 --- !u!1 &1080214286
 GameObject:
   m_ObjectHideFlags: 0
@@ -43337,6 +43316,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1918345956}
   m_CullTransparentMesh: 1
+--- !u!1 &2037281892 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5367953966041116264, guid: 3aba66554bef00c4ea07e8a72e2d206b, type: 3}
+  m_PrefabInstance: {fileID: 1642715804}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2101681462
 GameObject:
   m_ObjectHideFlags: 0

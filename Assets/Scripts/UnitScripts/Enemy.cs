@@ -38,4 +38,17 @@ public class Enemy : Unit
 	{
         return (xpAmount, goldAmount);
 	}
+
+    /// <summary>
+    /// Removes health from the enemy; checks for death
+    /// </summary>
+    /// <param name="amount">The amount damage the enemy takes</param>
+	public override void TakeDamage(float amount)
+	{
+		base.TakeDamage(amount);
+
+        // Check for death
+        if(health <= 0.0f)
+            LevelManager.instance.player.GetComponent<Player>().CollectResources(xpAmount, goldAmount);
+	}
 }
