@@ -6,6 +6,7 @@ public enum MenuState
 {
     MainMenu, 
     Select,
+    CharacterCreate,
     Game,
     Pause,
     GameOver
@@ -21,11 +22,11 @@ public class GameManager : MonoBehaviour
     // (I think its at the very beginning of runtime)
 	private void Awake()
 	{
-        // If the reference for this script is null, assign it this script.
-        // If the reference is to something else (it already exists)
-        // than this is not needed, thus destroy it
+        // If the reference for this script is null, assign it this script
         if(instance == null)
             instance = this;
+        // If the reference is to something else (it already exists)
+        // than this is not needed, thus destroy it
         else if(instance != this)
             Destroy(gameObject);
     }
@@ -68,6 +69,8 @@ public class GameManager : MonoBehaviour
             case MenuState.MainMenu:
                 break;
             case MenuState.Select:
+                break;
+            case MenuState.CharacterCreate:
                 break;
             case MenuState.Game:
                 break;
