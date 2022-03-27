@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     //Declaration of variables
-    public float moveSpeed = 5.0f;
     public float collisionOffset = 0.0f;
     public ContactFilter2D movementFilter;
 
@@ -72,12 +71,12 @@ public class PlayerController : MonoBehaviour
         if (direction != Vector2.zero)
         {
             //Check for potential collisions
-            int count = rigidbody.Cast(direction, movementFilter, castCollisions, moveSpeed * Time.fixedDeltaTime + collisionOffset);
+            int count = rigidbody.Cast(direction, movementFilter, castCollisions, PlayerManager.instance.movement * Time.fixedDeltaTime + collisionOffset);
 
             //If no potential collisiosn are detected, move the character in the specified direction
             if (count == 0)
             {
-                rigidbody.MovePosition(rigidbody.position + direction * moveSpeed * Time.fixedDeltaTime);
+                rigidbody.MovePosition(rigidbody.position + direction * PlayerManager.instance.movement * Time.fixedDeltaTime);
                 return true;
             }
             else
