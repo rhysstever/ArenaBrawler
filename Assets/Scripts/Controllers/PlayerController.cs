@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
             //Check for potential collisions
             int count = rigidbody.Cast(direction, movementFilter, castCollisions, PlayerManager.instance.movement * Time.fixedDeltaTime + collisionOffset);
 
-            //If no potential collisiosn are detected, move the character in the specified direction
+            //If no potential collisions are detected, move the character in the specified direction
             if (count == 0)
             {
                 rigidbody.MovePosition(rigidbody.position + direction * PlayerManager.instance.movement * Time.fixedDeltaTime);
