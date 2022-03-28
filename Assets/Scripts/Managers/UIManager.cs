@@ -151,6 +151,7 @@ public class UIManager : MonoBehaviour
                 break;
             case MenuState.CharacterCreate:
                 createCharacterParent.SetActive(true);
+                ClearCreateCharacterInput();
                 break;
             case MenuState.Game:
                 gameParent.SetActive(true);
@@ -330,5 +331,17 @@ public class UIManager : MonoBehaviour
             Debug.Log("You need to select a character");
         else 
             GameManager.instance.ChangeMenuState(MenuState.Game);
+    }
+
+    /// <summary>
+    /// Clears all inputs in the character creation menu
+    /// </summary>
+    private void ClearCreateCharacterInput()
+	{
+        // Clear text input
+        characterNameTextInput.GetComponent<TMP_InputField>().text = "";
+        // Turn off all class toggles
+        foreach(Transform toggleTransform in characterClassTogglesParent.transform)
+            toggleTransform.GetComponent<Toggle>().isOn = false;
     }
 }

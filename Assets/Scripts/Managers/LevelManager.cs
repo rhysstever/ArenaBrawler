@@ -53,41 +53,25 @@ public class LevelManager : MonoBehaviour
         // Create a struct for each levelable rpg class
         ClassStats gladiatorStats = new ClassStats()
         {
-            baseHealth = 20,
-            baseHealthRegen = 1,
-            baseMovement = 5,
-            baseDefense = 5,
-            baseDamage = 2,
-            baseAttackSpeed = 3,
-            baseStamina = 10,
-            baseStaminaRegen = 1,
-            levelMultiplierHealth = 0,
-            levelMultiplierHealthRegen = 0,
-            levelMultiplierMovement = 0,
-            levelMultiplierDefense = 0,
-            levelMultiplierDamage = 0,
-            levelMultiplierAttackSpeed = 0,
-            levelMultiplierStamina = 0,
-            levelMultiplierStaminaRegen = 0
+            health = (20.0f, 0),
+            healthRegen = (1.0f, 0),
+            movement = (2.5f, 0),
+            defense = (5.0f, 0),
+            damage = (2.0f, 0),
+            attackSpeed = (3.0f, 0),
+            stamina = (10.0f, 0),
+            staminaRegen = (1.0f, 0)
         };
         ClassStats brawlerStats = new ClassStats()
         {
-            baseHealth = 10,
-            baseHealthRegen = 2,
-            baseMovement = 7,
-            baseDefense = 2,
-            baseDamage = 1,
-            baseAttackSpeed = 6,
-            baseStamina = 20,
-            baseStaminaRegen = 2,
-            levelMultiplierHealth = 0,
-            levelMultiplierHealthRegen = 0,
-            levelMultiplierMovement = 0,
-            levelMultiplierDefense = 0,
-            levelMultiplierDamage = 0,
-            levelMultiplierAttackSpeed = 0,
-            levelMultiplierStamina = 0,
-            levelMultiplierStaminaRegen = 0
+            health = (10.0f, 0),
+            healthRegen = (2.0f, 0),
+            movement = (4.0f, 0),
+            defense = (2.0f, 0),
+            damage = (1.0f, 0),
+            attackSpeed = (6.0f, 0),
+            stamina = (20.0f, 0),
+            staminaRegen = (2.0f, 0)
         };
 
         // Add each struct to the dictionary
@@ -98,20 +82,15 @@ public class LevelManager : MonoBehaviour
 
 public struct ClassStats
 {
-    public int baseHealth;
-    public int baseHealthRegen;
-    public int baseMovement;
-    public int baseDefense;
-    public int baseDamage;
-    public int baseAttackSpeed;
-    public int baseStamina;
-    public int baseStaminaRegen;
-    public float levelMultiplierHealth;
-    public float levelMultiplierHealthRegen;
-    public float levelMultiplierMovement;
-    public float levelMultiplierDefense;
-    public float levelMultiplierDamage;
-    public float levelMultiplierAttackSpeed;
-    public float levelMultiplierStamina;
-    public float levelMultiplierStaminaRegen;
+    // For each stat
+    // Item1: base value
+    // Item2: level modifier value
+    public (float, float) health;
+    public (float, float) healthRegen;
+    public (float, float) movement;
+    public (float, float) defense;
+    public (float, float) damage;
+    public (float, float) attackSpeed;
+    public (float, float) stamina;
+    public (float, float) staminaRegen;
 }
