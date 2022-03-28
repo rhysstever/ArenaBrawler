@@ -26,41 +26,21 @@ public class Player : Unit
     }
 
     /// <summary>
-    /// Gets the levels/classes of the character
+    /// Clears all of the stats of the player
     /// </summary>
-    /// <returns>The list of classes of the current character</returns>
-    public List<ClassType> GetLevels()
-    {
-        return levels;
-    }
+    public void ClearStats()
+	{
+        unitName = "";
+        health = 0;
+        healthRegen = 0;
+        movement = 0;
+        defense = 0;
+        damage = 0;
+        attackSpeed = 0;
+        stamina = 0;
+        staminaRegen = 0;
 
-    /// <summary>
-    /// Clears the levels list
-    /// </summary>
-    public void ResetLevels()
-    {
         levels.Clear();
-    }
-
-    /// <summary>
-    /// Adds a level to the player
-    /// </summary>
-    /// <param name="levelUpClass">The class that the player is leveling into</param>
-    public void LevelUp(ClassType levelUpClass)
-    {
-        // If the player has levels aleady,
-        // Add the leveling stats of the class to the player
-        // (the player already received base stats from their initial class)
-        if(levels.Count > 0)
-            IncreaseStats(LevelManager.instance.classStats[levelUpClass]);
-        // If the player does not have a level in that class,
-        // Add the base stats of the class to the player
-        // (it is the first total level of the player)
-        else
-            SetupStats(LevelManager.instance.classStats[levelUpClass]);
-
-        // Adds that class to the player's levels, setting it at level 1
-        levels.Add(levelUpClass);
     }
 
     /// <summary>
@@ -93,6 +73,36 @@ public class Player : Unit
         attackSpeed *= 1 + classStats.levelMultiplierAttackSpeed;
         stamina *= 1 + classStats.levelMultiplierStamina;
         staminaRegen *= 1 + classStats.levelMultiplierStamina;
+    }
+
+    /// <summary>
+    /// Gets the levels/classes of the character
+    /// </summary>
+    /// <returns>The list of classes of the current character</returns>
+    public List<ClassType> GetLevels()
+    {
+        return levels;
+    }
+
+    /// <summary>
+    /// Adds a level to the player
+    /// </summary>
+    /// <param name="levelUpClass">The class that the player is leveling into</param>
+    public void LevelUp(ClassType levelUpClass)
+    {
+        // If the player has levels aleady,
+        // Add the leveling stats of the class to the player
+        // (the player already received base stats from their initial class)
+        if(levels.Count > 0)
+            IncreaseStats(LevelManager.instance.classStats[levelUpClass]);
+        // If the player does not have a level in that class,
+        // Add the base stats of the class to the player
+        // (it is the first total level of the player)
+        else
+            SetupStats(LevelManager.instance.classStats[levelUpClass]);
+
+        // Adds that class to the player's levels, setting it at level 1
+        levels.Add(levelUpClass);
     }
 
     /// <summary>
