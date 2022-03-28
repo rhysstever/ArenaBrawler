@@ -47,7 +47,7 @@ public class Player : Unit
     /// Sets the player's stats based on the leveled class
     /// </summary>
     /// <param name="classStats">The class the stats are being set from</param>
-    public void SetupStats(ClassStats classStats)
+    public void SetStats(ClassStats classStats)
     {
         health = classStats.baseHealth;
         healthRegen = classStats.baseHealthRegen;
@@ -99,7 +99,7 @@ public class Player : Unit
         // Add the base stats of the class to the player
         // (it is the first total level of the player)
         else
-            SetupStats(LevelManager.instance.classStats[levelUpClass]);
+            SetStats(LevelManager.instance.classStats[levelUpClass]);
 
         // Adds that class to the player's levels, setting it at level 1
         levels.Add(levelUpClass);

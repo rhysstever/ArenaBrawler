@@ -107,7 +107,7 @@ public class UIManager : MonoBehaviour
             case MenuState.CharacterCreate:
                 break;
             case MenuState.Game:
-                // When in the game, controls: 
+                // When in the game, key controls: 
                 // Esc:     Opens pause menu
                 // Tab:     Ends the game
                 if(Input.GetKeyDown(KeyCode.Escape))
@@ -116,7 +116,7 @@ public class UIManager : MonoBehaviour
                     GameManager.instance.ChangeMenuState(MenuState.GameOver);
                 break;
             case MenuState.Pause:
-                // When paused, controls: 
+                // When game is paused, key controls:
                 // Esc:     Resumes the game
                 if(Input.GetKeyDown(KeyCode.Escape))
                     GameManager.instance.ChangeMenuState(MenuState.Game);
@@ -148,7 +148,6 @@ public class UIManager : MonoBehaviour
                 // create buttons for each saved character and 
                 // select the first saved character's button
                 CreateSavedCharacterButtons();
-                LevelManager.instance.player.GetComponent<Player>().ClearStats();
                 break;
             case MenuState.CharacterCreate:
                 createCharacterParent.SetActive(true);
@@ -182,11 +181,16 @@ public class UIManager : MonoBehaviour
         float yPos = 50.0f;
         float deltaY = -50.0f;
 
+        GameObject firstSave = null;
+
         // Loop through each saved file
         foreach(FileInfo file in dataFiles)
 		{
             // Create the actual button
             GameObject savedCharacterButton = Instantiate(savedCharacterButtonPrefab, savedCharacterButtonsParent.transform);
+
+            // Set the first save if it is null
+            if(firstSave == null) firstSave = savedCharacterButton;
 
             yPos += deltaY;
             savedCharacterButton.transform.localPosition = new Vector3(0.0f, yPos, 0.0f);
@@ -200,13 +204,10 @@ public class UIManager : MonoBehaviour
                 () => LoadSavedCharacterButton(savedCharacterButton));
         }
 
-        // Select the first button (if there is one)
-        if(dataFiles.Length > 0)
-            savedCharacterButtonsParent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
-        // Otherwise clear the player stats
-        else 
-            LevelManager.instance.player.GetComponent<Player>().ClearStats();
-    }
+		// Select the first button (if there is one)
+		if(firstSave != null)
+            firstSave.GetComponent<Button>().onClick.Invoke();
+	} 
 
     /// <summary>
     /// Loads a character's stats when it is selected
@@ -240,6 +241,9 @@ public class UIManager : MonoBehaviour
         // Destroy() is too slow (the new buttons are being created immediately after
         for(int i = characterButtonsToBeDestroyed.Count - 1; i >= 0; i--)
             DestroyImmediate(characterButtonsToBeDestroyed[i]);
+
+        // Clear player stats
+        LevelManager.instance.player.GetComponent<Player>().ClearStats();
     }
 
     /// <summary>
