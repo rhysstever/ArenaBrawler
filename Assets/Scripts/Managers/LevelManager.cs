@@ -40,8 +40,7 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-            player.GetComponent<Player>().TakeDamage(1.0f);
+
     }
 
     /// <summary>

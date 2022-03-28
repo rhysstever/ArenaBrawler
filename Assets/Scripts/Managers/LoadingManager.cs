@@ -92,8 +92,6 @@ public class LoadingManager : MonoBehaviour
 	{
         // Set saved data as game values
         LevelManager.instance.player.GetComponent<Player>().unitName = loadedSave.name;
-        // Reset the current character
-        LevelManager.instance.player.GetComponent<Player>().ResetLevels();
         // Level the character in order of the saved classes
         foreach(ClassType level in loadedSave.classLevels)
             LevelManager.instance.player.GetComponent<Player>().LevelUp(level);
