@@ -31,10 +31,13 @@ public class LevelManager : MonoBehaviour
     public GameObject player;
     public Dictionary<ClassType, ClassStats> classStats;
 
+    private List<int> xpAmountsToLevel;
+
     // Start is called before the first frame update
     void Start()
     {
         FillClassStatsDictionary();
+        FillXPAmountsToLevelList();
     }
 
     // Update is called once per frame
@@ -78,6 +81,58 @@ public class LevelManager : MonoBehaviour
         classStats.Add(ClassType.Gladiator, gladiatorStats);
         classStats.Add(ClassType.Brawler, brawlerStats);
     }
+
+    /// <summary>
+    /// Creates a list that holds how much xp a character needs to level each level
+    /// </summary>
+    private void FillXPAmountsToLevelList()
+	{
+        xpAmountsToLevel = new List<int>();
+
+        xpAmountsToLevel.Add(0); // Level 1 : no XP required
+        xpAmountsToLevel.Add(100); 
+        xpAmountsToLevel.Add(150);
+        xpAmountsToLevel.Add(200);
+        xpAmountsToLevel.Add(250); // Level 5
+        xpAmountsToLevel.Add(300);
+        xpAmountsToLevel.Add(350);
+        xpAmountsToLevel.Add(400);
+        xpAmountsToLevel.Add(450);
+        xpAmountsToLevel.Add(500); // Level 10 : "max" level (for now)
+    }
+
+    /// <summary>
+    /// Gets how much XP is needed to get to that level
+    /// </summary>
+    /// <param name="level">The goal level</param>
+    /// <returns>How much XP is needed to get to that level from the previous level</returns>
+    public int XPToLevel(int level)
+	{
+        return xpAmountsToLevel[level + 1]; // +1 needed because lists are indexed at 0
+	}
+
+    /// <summary>
+    /// Gets the total XP the character needs from their current level to reach the goal level
+    /// </summary>
+    /// <param name="player">The </param>
+    /// <param name="goalLevel">The level the player wants to reach</param>
+    /// <returns>The amount of total XP the player needs from their current level to reach the goal level</returns>
+    public int XPToLevel(GameObject character, int goalLevel)
+	{
+        int startingLevel = character.GetComponent<Player>().GetLevels().Count;
+        // Make sure the player is not already at or past the goal level
+        if(startingLevel >= goalLevel)
+            return 0;
+
+        // Subtracts the player's current xp from the total amount needed
+        int currentXP = character.GetComponent<Player>().currentXP;
+        int totalXPNeeded = -currentXP;
+        // Add each level's XP amount beyond the starting level until the goal level is reached
+        for(int i = startingLevel + 1; i <= goalLevel; i++)
+            totalXPNeeded += XPToLevel(i);
+
+        return totalXPNeeded;
+	}
 }
 
 public struct ClassStats

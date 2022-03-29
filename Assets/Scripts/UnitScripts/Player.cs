@@ -11,18 +11,27 @@ public class Player : Unit
     public int currentXP;
     public int currentGold;
 
-    private List<ClassType> levels;
+    private List<ClassType> currentLevels;
 
     // Start is called before the first frame update
     void Start()
     {
-        levels = new List<ClassType>();
+        currentLevels = new List<ClassType>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Space))
+            CollectResources(1000, 100);
 
+        if(CanLevelUp())
+        {
+            if(Input.GetKeyDown(KeyCode.G))
+                LevelUp(ClassType.Gladiator);
+            else if(Input.GetKeyDown(KeyCode.B))
+                LevelUp(ClassType.Brawler);
+		}
     }
 
     /// <summary>
@@ -40,7 +49,7 @@ public class Player : Unit
         stamina = 0;
         staminaRegen = 0;
 
-        levels.Clear();
+        currentLevels.Clear();
     }
 
     /// <summary>
@@ -81,7 +90,7 @@ public class Player : Unit
     /// <returns>The list of classes of the current character</returns>
     public List<ClassType> GetLevels()
     {
-        return levels;
+        return currentLevels;
     }
 
     /// <summary>
@@ -90,10 +99,13 @@ public class Player : Unit
     /// <param name="levelUpClass">The class that the player is leveling into</param>
     public void LevelUp(ClassType levelUpClass)
     {
+        // Removes the amount of XP needed to level
+        // CollectResources(-LevelManager.instance.XPToLevel(currentLevels.Count + 1), 0); // TODO: refine XP vs levling (maybe keep track of total xp instead of removing it every levelup)
+
         // If the player has levels aleady,
         // Add the leveling stats of the class to the player
         // (the player already received base stats from their initial class)
-        if(levels.Count > 0)
+        if(currentLevels.Count > 0)
             IncreaseStats(LevelManager.instance.classStats[levelUpClass]);
         // If the player does not have a level in that class,
         // Add the base stats of the class to the player
@@ -102,7 +114,7 @@ public class Player : Unit
             SetStats(LevelManager.instance.classStats[levelUpClass]);
 
         // Adds that class to the player's levels, setting it at level 1
-        levels.Add(levelUpClass);
+        currentLevels.Add(levelUpClass);
     }
 
     /// <summary>
@@ -126,4 +138,14 @@ public class Player : Unit
         currentXP += xpCollected;
         currentGold += goldCollected;
     }
+
+    /// <summary>
+    /// Checks if the player can level up
+    /// </summary>
+    /// <returns>Whether the player has enough XP to level up, based on their current level</returns>
+    private bool CanLevelUp()
+    {
+        int currentLevel = currentLevels.Count;
+        return currentXP >= LevelManager.instance.XPToLevel(currentLevel);
+	}
 }
