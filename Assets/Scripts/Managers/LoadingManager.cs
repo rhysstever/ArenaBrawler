@@ -48,12 +48,13 @@ public class LoadingManager : MonoBehaviour
         newSave = new Save();
 
         // Set values of data that will be saved
-        newSave.name = LevelManager.instance.characterName;
-        newSave.classLevels = LevelManager.instance.GetLevels();
+        string name = LevelManager.instance.player.GetComponent<Player>().unitName;
+        newSave.name = name;
+        newSave.classLevels = LevelManager.instance.player.GetComponent<Player>().GetLevels();
 
         // Turn the Save object into a json string and save it
         string savedDataStr = JsonConvert.SerializeObject(newSave);
-        System.IO.File.WriteAllText(localSavePath + LevelManager.instance.characterName + ".json", savedDataStr);
+        System.IO.File.WriteAllText(localSavePath + name + ".json", savedDataStr);
     }
 
     /// <summary>
@@ -62,40 +63,22 @@ public class LoadingManager : MonoBehaviour
     /// <param name="characterName">The name of the saved character</param>
     public void LoadSavedCharacter(string characterName)
 	{
-        SetLoadedData(LoadSave(characterName));
-	}
-
-    /// <summary>
-    /// Loads a character's saved data
-    /// </summary>
-    /// <param name="characterName">The name of the character</param>
-    /// <returns>The save data of that character</returns>
-	private Save LoadSave(string characterName)
-	{
         // Check that a save file exists for the character
         if(!System.IO.File.Exists(localSavePath + characterName + ".json"))
-            return null;    // End early if there is no save file
+            return;    // End early if there is no save file
 
         // Find and read the saved json file 
         string loadedDataStr = System.IO.File.ReadAllText(localSavePath + characterName + ".json");
 
         // Convert the json string into a Save object 
-        return JsonConvert.DeserializeObject<Save>(loadedDataStr);
-    }
+        Save loadedSave = JsonConvert.DeserializeObject<Save>(loadedDataStr);
 
-    /// <summary>
-    /// Converts the Save object to game values
-    /// </summary>
-    /// <param name="loadedSave">The Save object of the loaded save file</param>
-    private void SetLoadedData(Save loadedSave)
-	{
         // Set saved data as game values
-        LevelManager.instance.characterName = loadedSave.name;
-        // Reset the current character
-        LevelManager.instance.ResetLevels();
+        LevelManager.instance.player.GetComponent<Player>().unitName = loadedSave.name;
+
         // Level the character in order of the saved classes
         foreach(ClassType level in loadedSave.classLevels)
-            LevelManager.instance.LevelUp(level);
+            LevelManager.instance.player.GetComponent<Player>().LevelUp(level);
     }
 
     /// <summary>

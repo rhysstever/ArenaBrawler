@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
             case MenuState.MainMenu:
                 break;
             case MenuState.Select:
+                LevelManager.instance.player.GetComponent<Player>().ClearStats();
                 break;
             case MenuState.CharacterCreate:
                 break;

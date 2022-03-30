@@ -36,7 +36,7 @@ public class UIManager : MonoBehaviour
     private GameObject playButton, quitButton;
 
     [SerializeField]    // Select Buttons
-    private GameObject savedCharacterButtonPrefab, selectCharacterButton, newCharacterButton;
+    private GameObject savedCharacterButtonPrefab, selectCharacterButton, newCharacterButton, deleteSaveButton;
 
     [SerializeField]    // Select empty parent gameObjects
     private GameObject savedCharacterButtonsParent;
@@ -65,16 +65,7 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game)
-		{
-            // When in the game, controls: 
-            // Esc:     Opens pause menu
-            // Tab:     Ends the game
-            if(Input.GetKeyDown(KeyCode.Escape))
-                GameManager.instance.ChangeMenuState(MenuState.Pause);
-            else if(Input.GetKeyDown(KeyCode.Tab))
-                GameManager.instance.ChangeMenuState(MenuState.GameOver);
-        }
+        UpdateUI();
     }
 
     /// <summary>
@@ -86,8 +77,9 @@ public class UIManager : MonoBehaviour
         playButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Select));
         quitButton.GetComponent<Button>().onClick.AddListener(() => Application.Quit());
         // Select buttons        
-        selectCharacterButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
         newCharacterButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.CharacterCreate));
+        selectCharacterButton.GetComponent<Button>().onClick.AddListener(() => CheckForSelectedCharacter());
+        deleteSaveButton.GetComponent<Button>().onClick.AddListener(() => DeleteSelectedSave());
         // Character Create toggles
         foreach(Transform toggleTransform in characterClassTogglesParent.transform)
             toggleTransform.GetComponent<Toggle>().onValueChanged.AddListener((bool value) => ToggleValueChange(toggleTransform.gameObject, value));
@@ -99,6 +91,39 @@ public class UIManager : MonoBehaviour
         pauseToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
         // Game Over buttons
         gameOverToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
+    }
+
+    /// <summary>
+    /// Runs constant logic based on the current menu state 
+    /// </summary>
+    private void UpdateUI()
+	{
+        switch(GameManager.instance.GetCurrentMenuState())
+        {
+            case MenuState.MainMenu:
+                break;
+            case MenuState.Select:
+                break;
+            case MenuState.CharacterCreate:
+                break;
+            case MenuState.Game:
+                // When in the game, key controls: 
+                // Esc:     Opens pause menu
+                // Tab:     Ends the game
+                if(Input.GetKeyDown(KeyCode.Escape))
+                    GameManager.instance.ChangeMenuState(MenuState.Pause);
+                else if(Input.GetKeyDown(KeyCode.Tab))
+                    GameManager.instance.ChangeMenuState(MenuState.GameOver);
+                break;
+            case MenuState.Pause:
+                // When game is paused, key controls:
+                // Esc:     Resumes the game
+                if(Input.GetKeyDown(KeyCode.Escape))
+                    GameManager.instance.ChangeMenuState(MenuState.Game);
+                break;
+            case MenuState.GameOver:
+                break;
+        }
     }
 
     /// <summary>
@@ -118,15 +143,20 @@ public class UIManager : MonoBehaviour
                 mainMenuParent.SetActive(true);
                 break;
             case MenuState.Select:
-                CreateSavedCharacterButtons();
                 selectParent.SetActive(true);
+                // At the start of the character select screen,
+                // create buttons for each saved character and 
+                // select the first saved character's button
+                CreateSavedCharacterButtons();
                 break;
             case MenuState.CharacterCreate:
                 createCharacterParent.SetActive(true);
+                ClearCreateCharacterInput();
                 break;
             case MenuState.Game:
-                characterName.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.characterName;
                 gameParent.SetActive(true);
+                // Update the name of the character
+                characterName.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.player.GetComponent<Player>().unitName;
                 break;
             case MenuState.Pause:
                 pauseParent.SetActive(true);
@@ -137,6 +167,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates a button for each saved character
+    /// </summary>
     private void CreateSavedCharacterButtons()
 	{
         ClearSavedCharacterButtons();
@@ -145,12 +178,20 @@ public class UIManager : MonoBehaviour
         DirectoryInfo dataFolder = new DirectoryInfo(LoadingManager.instance.GetLocalSavePath());
         FileInfo[] dataFiles = dataFolder.GetFiles("*.json");
 
+        // Initial and the change in y-value for each button created
         float yPos = 50.0f;
         float deltaY = -50.0f;
 
+        GameObject firstSave = null;
+
+        // Loop through each saved file
         foreach(FileInfo file in dataFiles)
 		{
+            // Create the actual button
             GameObject savedCharacterButton = Instantiate(savedCharacterButtonPrefab, savedCharacterButtonsParent.transform);
+
+            // Set the first save if it is null
+            if(firstSave == null) firstSave = savedCharacterButton;
 
             yPos += deltaY;
             savedCharacterButton.transform.localPosition = new Vector3(0.0f, yPos, 0.0f);
@@ -160,14 +201,51 @@ public class UIManager : MonoBehaviour
             // Set the text of the button
             savedCharacterButton.transform.GetChild(0).GetComponent<TMP_Text>().text = trimmedName;   
             // Set the onClick
-            savedCharacterButton.GetComponent<Button>().onClick.AddListener(() => LoadingManager.instance.LoadSavedCharacter(trimmedName));
+            savedCharacterButton.transform.GetComponent<Button>().onClick.AddListener(
+                () => LoadSavedCharacterButton(savedCharacterButton));
         }
+
+		// Select the first button (if there is one)
+		if(firstSave != null)
+            firstSave.GetComponent<Button>().onClick.Invoke();
+	} 
+
+    /// <summary>
+    /// Loads a character's stats when it is selected
+    /// </summary>
+    /// <param name="selectedCharacterButton">The name of the character being selected</param>
+    private void LoadSavedCharacterButton(GameObject selectedCharacterButton)
+	{
+        // Make the button background green
+        selectedCharacterButton.transform.GetComponent<Image>().color = new Color(0.0f, 200.0f, 0.0f);
+        // Make every other button background white
+        foreach(Transform savedCharacterButtonParentTransform in savedCharacterButtonsParent.transform)
+		{
+            if(savedCharacterButtonParentTransform.gameObject != selectedCharacterButton)
+                savedCharacterButtonParentTransform.GetComponent<Image>().color = Color.white;
+        }
+
+        LoadingManager.instance.LoadSavedCharacter(selectedCharacterButton.name);
     }
 
+    /// <summary>
+    /// Clears all load character buttons
+    /// </summary>
     private void ClearSavedCharacterButtons()
 	{
+        List<GameObject> characterButtonsToBeDestroyed = new List<GameObject>();
 
-	}
+        // Delete any children buttons in the parent
+        foreach(Transform savedCharacterButtonTrans in savedCharacterButtonsParent.transform)
+            characterButtonsToBeDestroyed.Add(savedCharacterButtonTrans.gameObject);
+
+        // Destroy() is too slow (the new buttons are being created immediately after
+        for(int i = characterButtonsToBeDestroyed.Count - 1; i >= 0; i--)
+            DestroyImmediate(characterButtonsToBeDestroyed[i]);
+
+        // Clear player stats
+        LevelManager.instance.player.GetComponent<Player>().ClearStats();
+    }
 
     /// <summary>
     /// Performs logic for when a toggle is clicked (for either toggle on or off)
@@ -198,13 +276,13 @@ public class UIManager : MonoBehaviour
 		}
 
         // Set the character name
-        LevelManager.instance.characterName = characterNameTextInput.GetComponent<TMP_InputField>().text;
+        LevelManager.instance.player.GetComponent<Player>().unitName = characterNameTextInput.GetComponent<TMP_InputField>().text;
 
         // Level up the character based on the class they selected
         foreach(Transform toggleTransform in characterClassTogglesParent.transform)
             if(toggleTransform.GetComponent<Toggle>().isOn)
                 if(Enum.TryParse(toggleTransform.gameObject.name.Substring(11), out ClassType classLevel))
-                    LevelManager.instance.LevelUp(classLevel);
+                    LevelManager.instance.player.GetComponent<Player>().LevelUp(classLevel);
 
         // Set the menu state to game
         GameManager.instance.ChangeMenuState(MenuState.Game);
@@ -227,5 +305,43 @@ public class UIManager : MonoBehaviour
 
         // If no class is selected, return false
         return false;
+    }
+
+    /// <summary>
+    /// Deletes a saved character
+    /// </summary>
+    private void DeleteSelectedSave()
+	{
+        string filePath = LoadingManager.instance.GetLocalSavePath() + LevelManager.instance.player.GetComponent<Player>().unitName + ".json";
+        // Delete the file of the character linked to that button
+        File.Delete(filePath);
+        // Delete the .meta file too
+        File.Delete(filePath + ".meta");
+
+        // Recreate the list of saved character buttons
+        CreateSavedCharacterButtons();
+    }
+
+    /// <summary>
+    /// Checks to make sure a character is selected before loading into the game
+    /// </summary>
+    private void CheckForSelectedCharacter()
+	{
+        if(LevelManager.instance.player.GetComponent<Player>().unitName == "")
+            Debug.Log("You need to select a character");
+        else 
+            GameManager.instance.ChangeMenuState(MenuState.Game);
+    }
+
+    /// <summary>
+    /// Clears all inputs in the character creation menu
+    /// </summary>
+    private void ClearCreateCharacterInput()
+	{
+        // Clear text input
+        characterNameTextInput.GetComponent<TMP_InputField>().text = "";
+        // Turn off all class toggles
+        foreach(Transform toggleTransform in characterClassTogglesParent.transform)
+            toggleTransform.GetComponent<Toggle>().isOn = false;
     }
 }
