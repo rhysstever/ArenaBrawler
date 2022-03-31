@@ -48,7 +48,7 @@ public class Enemy : Unit
 		base.TakeDamage(amount);
 
         // Check for death
-        if(health <= 0.0f)
+        if(currentHealth <= 0.0f)
             LevelManager.instance.player.GetComponent<Player>().CollectResources(xpAmount, goldAmount);
 	}
 }

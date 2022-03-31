@@ -5,7 +5,8 @@ using UnityEngine;
 public class Player : Unit
 {
     public float healthRegen;
-    public float stamina;
+    public float currentStamina;
+    public float maxStamina;
     public float staminaRegen;
 
     public int currentXP;
@@ -22,16 +23,7 @@ public class Player : Unit
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-            CollectResources(1000, 100);
-
-        if(CanLevelUp())
-        {
-            if(Input.GetKeyDown(KeyCode.G))
-                LevelUp(ClassType.Gladiator);
-            else if(Input.GetKeyDown(KeyCode.B))
-                LevelUp(ClassType.Brawler);
-		}
+        
     }
 
     /// <summary>
@@ -40,14 +32,19 @@ public class Player : Unit
     public void ClearStats()
 	{
         unitName = "";
-        health = 0;
+        currentHealth = 0;
+        maxHealth = 0;
         healthRegen = 0;
         movement = 0;
         defense = 0;
         damage = 0;
         attackSpeed = 0;
-        stamina = 0;
+        currentStamina = 0;
+        maxStamina = 0;
         staminaRegen = 0;
+
+        currentXP = 0;
+        currentGold = 0;
 
         currentLevels.Clear();
     }
@@ -58,13 +55,15 @@ public class Player : Unit
     /// <param name="classStats">The class the stats are being set from</param>
     public void SetStats(ClassStats classStats)
     {
-        health = classStats.health.Item1;
+        currentHealth = classStats.health.Item1;
+        maxHealth = classStats.health.Item1;
         healthRegen = classStats.healthRegen.Item1;
         movement = classStats.movement.Item1;
         defense = classStats.defense.Item1;
         damage = classStats.damage.Item1;
         attackSpeed = classStats.attackSpeed.Item1;
-        stamina = classStats.stamina.Item1;
+        currentStamina = classStats.stamina.Item1;
+        maxStamina = classStats.stamina.Item1;
         staminaRegen = classStats.staminaRegen.Item1;
     }
 
@@ -74,23 +73,64 @@ public class Player : Unit
     /// <param name="classStats">The class the player has leveled</param>
     public void IncreaseStats(ClassStats classStats)
     {
-        health *= 1 + classStats.health.Item2;
+        currentHealth *= 1 + classStats.health.Item2;
+        maxHealth *= 1 + classStats.health.Item2;
         healthRegen *= 1 + classStats.healthRegen.Item2;
         movement *= 1 + classStats.movement.Item2;
         defense *= 1 + classStats.defense.Item2;
         damage *= 1 + classStats.damage.Item2;
         attackSpeed *= 1 + classStats.attackSpeed.Item2;
-        stamina *= 1 + classStats.stamina.Item2;
+        currentStamina *= 1 + classStats.stamina.Item2;
+        maxStamina *= 1 + classStats.stamina.Item2;
         staminaRegen *= 1 + classStats.staminaRegen.Item2;
     }
 
     /// <summary>
-    /// Gets the levels/classes of the character
+    /// Sets player stat values from a Save object
     /// </summary>
-    /// <returns>The list of classes of the current character</returns>
-    public List<ClassType> GetLevels()
+    /// <param name="savedStats">The save of the player stats</param>
+    public void LoadStats(Save savedStats)
+	{
+        unitName = savedStats.name;
+        currentLevels = savedStats.classLevels;
+        currentHealth = savedStats.currentHealth;
+        maxHealth = savedStats.maxHealth;
+        healthRegen = savedStats.healthRegen;
+        movement = savedStats.movement;
+        defense = savedStats.defense;
+        damage = savedStats.damage;
+        attackSpeed = savedStats.attackSpeed;
+        currentStamina = savedStats.currentStamina;
+        maxStamina = savedStats.maxStamina;
+        staminaRegen = savedStats.staminaRegen;
+        currentXP = savedStats.currentXP;
+        currentGold = savedStats.currentGold;
+	}
+
+    /// <summary>
+    /// Gets the levels/classes of the character in a simple list format
+    /// </summary>
+    /// <returns>The list of the order of classes of the current character</returns>
+    public List<ClassType> GetLevelsList()
     {
         return currentLevels;
+    }
+
+    /// <summary>
+    /// Gets the levels of the character in a dictionary format, broken down by class
+    /// </summary>
+    /// <returns>A breakdown of how many levels of each class the character has</returns>
+    public Dictionary<ClassType, int> GetLevelsBreakdown()
+	{
+        Dictionary<ClassType, int> levels = new Dictionary<ClassType, int>();
+        foreach(ClassType type in currentLevels)
+        {
+            if(levels.ContainsKey(type))
+                levels[type]++;
+            else
+                levels.Add(type, 1);
+        }
+        return levels;
     }
 
     /// <summary>
@@ -124,7 +164,7 @@ public class Player : Unit
 	{
         base.TakeDamage(amount);
 
-        if(health <= 0.0f)
+        if(currentHealth <= 0.0f)
             GameManager.instance.ChangeMenuState(MenuState.GameOver);
 	}
 

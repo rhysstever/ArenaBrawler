@@ -119,7 +119,7 @@ public class LevelManager : MonoBehaviour
     /// <returns>The amount of total XP the player needs from their current level to reach the goal level</returns>
     public int XPToLevel(GameObject character, int goalLevel)
 	{
-        int startingLevel = character.GetComponent<Player>().GetLevels().Count;
+        int startingLevel = character.GetComponent<Player>().GetLevelsList().Count;
         // Make sure the player is not already at or past the goal level
         if(startingLevel >= goalLevel)
             return 0;

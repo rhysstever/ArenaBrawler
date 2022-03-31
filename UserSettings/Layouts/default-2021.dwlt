@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2560
     height: 1357
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Inspector
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 60
+  controlID: 42
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 61
+  controlID: 82
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 62
+  controlID: 83
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -336,9 +336,9 @@ MonoBehaviour:
     m_VAllowExceedBaseRangeMax: 1
     m_ScaleWithWindow: 0
     m_HSlider: 0
-    m_VSlider: 0
+    m_VSlider: 1
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 0
+    m_EnableMouseInput: 1
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1
@@ -349,20 +349,20 @@ MonoBehaviour:
       y: 21
       width: 1734
       height: 933
-    m_Scale: {x: 0.86388886, y: 0.86388886}
-    m_Translation: {x: 867, y: 466.49997}
+    m_Scale: {x: 0.8833333, y: 0.8833333}
+    m_Translation: {x: 867, y: 466.5}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -1003.6013
-      y: -540
-      width: 2007.2026
-      height: 1080
+      x: -981.50946
+      y: -528.1132
+      width: 1963.0189
+      height: 1056.2264
     m_MinimalGUI: 1
-  m_defaultScale: 0.86388886
+  m_defaultScale: 0.8833333
   m_LastWindowPixelSize: {x: 1734, y: 954}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
@@ -400,9 +400,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: b4240000
-      m_LastClickedID: 0
-      m_ExpandedIDs: 20fbffff
+      m_SelectedIDs: b2620000
+      m_LastClickedID: 25266
+      m_ExpandedIDs: 28fbffffb2610000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -673,9 +673,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 1001.65955, y: 534.54956, z: 9.201495}
+    m_Target: {x: 1016.69275, y: 503.38696, z: -3.827137}
     speed: 2
-    m_Value: {x: 1001.65955, y: 534.54956, z: 9.201495}
+    m_Value: {x: 1016.69275, y: 503.38696, z: -3.827137}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -726,9 +726,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 705.9478
+    m_Target: 653.74634
     speed: 2
-    m_Value: 705.9478
+    m_Value: 653.74634
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -822,22 +822,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Managers
+    - Assets/Scripts/UnitScripts
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/Managers
+  - Assets/Scripts/UnitScripts
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\Rhys\Desktop\PersonalProjects\ArenaBrawler
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: ec630000
-    m_LastClickedID: 25580
-    m_ExpandedIDs: 00000000c4630000c6630000c863000000ca9a3b
+    m_SelectedIDs: e6630000
+    m_LastClickedID: 25574
+    m_ExpandedIDs: 00000000bc63000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -865,7 +865,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000c4630000c6630000c8630000
+    m_ExpandedIDs: 00000000bc630000be630000c0630000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

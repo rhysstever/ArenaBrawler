@@ -36,19 +36,19 @@ public class UIManager : MonoBehaviour
     private GameObject playButton, quitButton;
 
     [SerializeField]    // Select Buttons
-    private GameObject savedCharacterButtonPrefab, selectCharacterButton, newCharacterButton, deleteSaveButton;
+    private GameObject savedCharacterButtonPrefab, selectCharacterButton, newCharacterButton, deleteSaveButton, selectToMainMenuButton;
 
     [SerializeField]    // Select empty parent gameObjects
     private GameObject savedCharacterButtonsParent;
 
     [SerializeField]    // Create Character Buttons
-    private GameObject createCharacterButton;
+    private GameObject createCharacterButton, createCharacterToSelectButton;
 
     [SerializeField]    // Create Character Inputs
     private GameObject characterNameTextInput, characterClassTogglesParent;
 
     [SerializeField]    // Game Text
-    private GameObject characterName;
+    private GameObject characterNameText, classText;
 
     [SerializeField]    // Pause Buttons
     private GameObject resumeButton, saveButton, pauseToMainMenuButton;
@@ -80,11 +80,13 @@ public class UIManager : MonoBehaviour
         newCharacterButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.CharacterCreate));
         selectCharacterButton.GetComponent<Button>().onClick.AddListener(() => CheckForSelectedCharacter());
         deleteSaveButton.GetComponent<Button>().onClick.AddListener(() => DeleteSelectedSave());
+        selectToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
         // Character Create toggles
         foreach(Transform toggleTransform in characterClassTogglesParent.transform)
             toggleTransform.GetComponent<Toggle>().onValueChanged.AddListener((bool value) => ToggleValueChange(toggleTransform.gameObject, value));
         // Character Create buttons
         createCharacterButton.GetComponent<Button>().onClick.AddListener(() => CreateNewCharacterButtonClicked());
+        createCharacterToSelectButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Select));
         // Pause buttons
         resumeButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
         saveButton.GetComponent<Button>().onClick.AddListener(() => LoadingManager.instance.CreateSave());
@@ -144,19 +146,19 @@ public class UIManager : MonoBehaviour
                 break;
             case MenuState.Select:
                 selectParent.SetActive(true);
-                // At the start of the character select screen,
-                // create buttons for each saved character and 
-                // select the first saved character's button
                 CreateSavedCharacterButtons();
                 break;
             case MenuState.CharacterCreate:
                 createCharacterParent.SetActive(true);
+                // Clear player stats and input fields for creating a new character
+                LevelManager.instance.player.GetComponent<Player>().ClearStats();
                 ClearCreateCharacterInput();
                 break;
             case MenuState.Game:
                 gameParent.SetActive(true);
-                // Update the name of the character
-                characterName.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.player.GetComponent<Player>().unitName;
+                // Update the text of the character
+                characterNameText.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.player.GetComponent<Player>().unitName;
+                UpdatePlayerLevelText();
                 break;
             case MenuState.Pause:
                 pauseParent.SetActive(true);
@@ -344,4 +346,17 @@ public class UIManager : MonoBehaviour
         foreach(Transform toggleTransform in characterClassTogglesParent.transform)
             toggleTransform.GetComponent<Toggle>().isOn = false;
     }
+
+    /// <summary>
+    /// Displays the class breakdown of the player
+    /// </summary>
+    private void UpdatePlayerLevelText()
+	{
+        Dictionary<ClassType, int> classes = LevelManager.instance.player.GetComponent<Player>().GetLevelsBreakdown();
+        string classStr = "Level " + LevelManager.instance.player.GetComponent<Player>().GetLevelsList().Count + ": ";
+        foreach(ClassType type in classes.Keys)
+            classStr += type + " " + classes[type] + " ";
+
+        classText.GetComponent<TMP_Text>().text = classStr;
+	}
 }

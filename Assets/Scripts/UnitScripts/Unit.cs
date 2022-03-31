@@ -5,7 +5,8 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public string unitName;
-    public float health;
+    public float currentHealth;
+    public float maxHealth;
     public float movement;
     public float defense;
     public float damage;
@@ -23,8 +24,23 @@ public class Unit : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Removes health from the unit
+    /// </summary>
+    /// <param name="amount">The amount of health the unit is losing</param>
     public virtual void TakeDamage(float amount)
 	{
-        health -= amount;
+        currentHealth -= amount;
     }
+
+    /// <summary>
+    /// Heals the unit's health
+    /// </summary>
+    /// <param name="amount">The amount the unit is healing</param>
+    public virtual void Heal(float amount)
+	{
+        currentHealth += amount;
+        if(currentHealth > maxHealth)
+            currentHealth = maxHealth;
+	}
 }
