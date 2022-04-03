@@ -165,7 +165,7 @@ public class Player : Unit
         base.TakeDamage(amount);
 
         if(currentHealth <= 0.0f)
-            GameManager.instance.ChangeMenuState(MenuState.GameOver);
+            GameManager.instance.ChangeMenuState(MenuState.GameEnd);
 	}
 
     /// <summary>

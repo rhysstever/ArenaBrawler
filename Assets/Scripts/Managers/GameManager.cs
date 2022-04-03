@@ -8,8 +8,9 @@ public enum MenuState
     Select,
     CharacterCreate,
     Game,
+    LevelUp,
     Pause,
-    GameOver
+    GameEnd
 }
 
 public class GameManager : MonoBehaviour
@@ -75,9 +76,11 @@ public class GameManager : MonoBehaviour
                 break;
             case MenuState.Game:
                 break;
+            case MenuState.LevelUp:
+                break;
             case MenuState.Pause:
                 break;
-            case MenuState.GameOver:
+            case MenuState.GameEnd:
                 break;
         }
 

@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
     private Canvas canvas;
 
     [SerializeField]    // Empty parent gameObjects
-    private GameObject mainMenuParent, selectParent, createCharacterParent, gameParent, pauseParent, gameOverParent;
+    private GameObject mainMenuParent, selectParent, createCharacterParent, gameParent, levelUpParent, pauseParent, gameEndParent;
 
     [SerializeField]    // Main Menu Buttons
     private GameObject playButton, quitButton;
@@ -50,11 +50,17 @@ public class UIManager : MonoBehaviour
     [SerializeField]    // Game Text
     private GameObject characterNameText, classText;
 
+    [SerializeField]    // Level Up Buttons
+    private GameObject levelUpGladiatorButton, levelUpBrawlerButton;
+
     [SerializeField]    // Pause Buttons
     private GameObject resumeButton, saveButton, pauseToMainMenuButton;
 
-    [SerializeField]    // Game Over Buttons
-    private GameObject gameOverToMainMenuButton;
+    [SerializeField]    // Game End Buttons
+    private GameObject gameEndToMainMenuButton;
+
+    [SerializeField]    // Game End Text
+    private GameObject gameEndText;
 
     // Start is called before the first frame update
     void Start()
@@ -87,12 +93,15 @@ public class UIManager : MonoBehaviour
         // Character Create buttons
         createCharacterButton.GetComponent<Button>().onClick.AddListener(() => CreateNewCharacterButtonClicked());
         createCharacterToSelectButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Select));
+        // Level Up buttons
+        levelUpGladiatorButton.GetComponent<Button>().onClick.AddListener(() => LevelUpClassButtonClicked(ClassType.Gladiator));
+        levelUpBrawlerButton.GetComponent<Button>().onClick.AddListener(() => LevelUpClassButtonClicked(ClassType.Brawler));
         // Pause buttons
         resumeButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
         saveButton.GetComponent<Button>().onClick.AddListener(() => LoadingManager.instance.CreateSave());
         pauseToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
         // Game Over buttons
-        gameOverToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
+        gameEndToMainMenuButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.MainMenu));
     }
 
     /// <summary>
@@ -115,7 +124,9 @@ public class UIManager : MonoBehaviour
                 if(Input.GetKeyDown(KeyCode.Escape))
                     GameManager.instance.ChangeMenuState(MenuState.Pause);
                 else if(Input.GetKeyDown(KeyCode.Tab))
-                    GameManager.instance.ChangeMenuState(MenuState.GameOver);
+                    GameManager.instance.ChangeMenuState(MenuState.GameEnd);
+                break;
+            case MenuState.LevelUp:
                 break;
             case MenuState.Pause:
                 // When game is paused, key controls:
@@ -123,7 +134,7 @@ public class UIManager : MonoBehaviour
                 if(Input.GetKeyDown(KeyCode.Escape))
                     GameManager.instance.ChangeMenuState(MenuState.Game);
                 break;
-            case MenuState.GameOver:
+            case MenuState.GameEnd:
                 break;
         }
     }
@@ -160,15 +171,23 @@ public class UIManager : MonoBehaviour
                 characterNameText.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.player.GetComponent<Player>().unitName;
                 UpdatePlayerLevelText();
                 break;
+            case MenuState.LevelUp:
+                levelUpParent.SetActive(true);
+                break;
             case MenuState.Pause:
                 pauseParent.SetActive(true);
                 break;
-            case MenuState.GameOver:
-                gameOverParent.SetActive(true);
+            case MenuState.GameEnd:
+                gameEndParent.SetActive(true);
+                // Change game end text to "Victory" or "Defeat" 
+                // based on whether the player survived
+                string gameEndStr = LevelManager.instance.player.GetComponent<Player>().currentHealth == 0 ? "Defeat" : "Victory";
+                gameEndText.GetComponent<TMP_Text>().text = gameEndStr;
                 break;
         }
     }
 
+    // === Character Select Menu Methods === 
     /// <summary>
     /// Creates a button for each saved character
     /// </summary>
@@ -204,7 +223,7 @@ public class UIManager : MonoBehaviour
             savedCharacterButton.transform.GetChild(0).GetComponent<TMP_Text>().text = trimmedName;   
             // Set the onClick
             savedCharacterButton.transform.GetComponent<Button>().onClick.AddListener(
-                () => LoadSavedCharacterButton(savedCharacterButton));
+                () => LoadSavedCharacterButtonClicked(savedCharacterButton));
         }
 
 		// Select the first button (if there is one)
@@ -216,16 +235,14 @@ public class UIManager : MonoBehaviour
     /// Loads a character's stats when it is selected
     /// </summary>
     /// <param name="selectedCharacterButton">The name of the character being selected</param>
-    private void LoadSavedCharacterButton(GameObject selectedCharacterButton)
+    private void LoadSavedCharacterButtonClicked(GameObject selectedCharacterButton)
 	{
         // Make the button background green
         selectedCharacterButton.transform.GetComponent<Image>().color = new Color(0.0f, 200.0f, 0.0f);
         // Make every other button background white
         foreach(Transform savedCharacterButtonParentTransform in savedCharacterButtonsParent.transform)
-		{
             if(savedCharacterButtonParentTransform.gameObject != selectedCharacterButton)
                 savedCharacterButtonParentTransform.GetComponent<Image>().color = Color.white;
-        }
 
         LoadingManager.instance.LoadSavedCharacter(selectedCharacterButton.name);
     }
@@ -249,6 +266,33 @@ public class UIManager : MonoBehaviour
         LevelManager.instance.player.GetComponent<Player>().ClearStats();
     }
 
+    /// <summary>
+    /// Deletes a saved character
+    /// </summary>
+    private void DeleteSelectedSave()
+    {
+        string filePath = LoadingManager.instance.GetLocalSavePath() + LevelManager.instance.player.GetComponent<Player>().unitName + ".json";
+        // Delete the file of the character linked to that button
+        File.Delete(filePath);
+        // Delete the .meta file too
+        File.Delete(filePath + ".meta");
+
+        // Recreate the list of saved character buttons
+        CreateSavedCharacterButtons();
+    }
+
+    /// <summary>
+    /// Checks to make sure a character is selected before loading into the game
+    /// </summary>
+    private void CheckForSelectedCharacter()
+    {
+        if(LevelManager.instance.player.GetComponent<Player>().unitName == "")
+            Debug.Log("You need to select a character");
+        else
+            GameManager.instance.ChangeMenuState(MenuState.Game);
+    }
+
+    // === Character Create Menu Methods ===
     /// <summary>
     /// Performs logic for when a toggle is clicked (for either toggle on or off)
     /// </summary>
@@ -310,32 +354,6 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Deletes a saved character
-    /// </summary>
-    private void DeleteSelectedSave()
-	{
-        string filePath = LoadingManager.instance.GetLocalSavePath() + LevelManager.instance.player.GetComponent<Player>().unitName + ".json";
-        // Delete the file of the character linked to that button
-        File.Delete(filePath);
-        // Delete the .meta file too
-        File.Delete(filePath + ".meta");
-
-        // Recreate the list of saved character buttons
-        CreateSavedCharacterButtons();
-    }
-
-    /// <summary>
-    /// Checks to make sure a character is selected before loading into the game
-    /// </summary>
-    private void CheckForSelectedCharacter()
-	{
-        if(LevelManager.instance.player.GetComponent<Player>().unitName == "")
-            Debug.Log("You need to select a character");
-        else 
-            GameManager.instance.ChangeMenuState(MenuState.Game);
-    }
-
-    /// <summary>
     /// Clears all inputs in the character creation menu
     /// </summary>
     private void ClearCreateCharacterInput()
@@ -347,6 +365,7 @@ public class UIManager : MonoBehaviour
             toggleTransform.GetComponent<Toggle>().isOn = false;
     }
 
+    // === Game Menu Methods ===
     /// <summary>
     /// Displays the class breakdown of the player
     /// </summary>
@@ -359,4 +378,14 @@ public class UIManager : MonoBehaviour
 
         classText.GetComponent<TMP_Text>().text = classStr;
 	}
+
+    // === Level Up Menu Methods ===
+    /// <summary>
+    /// Levels up the player by a specific class
+    /// </summary>
+    /// <param name="classType">The class to level up</param>
+    private void LevelUpClassButtonClicked(ClassType classType) 
+    {
+        LevelManager.instance.player.GetComponent<Player>().LevelUp(classType);
+    }
 }
