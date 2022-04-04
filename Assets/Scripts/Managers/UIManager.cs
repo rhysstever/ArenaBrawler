@@ -387,5 +387,6 @@ public class UIManager : MonoBehaviour
     private void LevelUpClassButtonClicked(ClassType classType) 
     {
         LevelManager.instance.player.GetComponent<Player>().LevelUp(classType);
+        GameManager.instance.ChangeMenuState(MenuState.Game);
     }
 }

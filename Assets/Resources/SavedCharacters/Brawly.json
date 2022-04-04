@@ -1,1 +1,1 @@
-{"name":"Brawly","classLevels":[1],"currentHealth":10.0,"maxHealth":10.0,"healthRegen":2.0,"movement":4.0,"defense":2.0,"damage":1.0,"attackSpeed":6.0,"currentStamina":20.0,"maxStamina":20.0,"staminaRegen":2.0,"currentXP":0,"currentGold":0}
+{"name":"Brawly","classLevels":[1,0,1],"currentHealth":14.3,"maxHealth":14.3,"healthRegen":2.64,"movement":5.72000027,"defense":2.86,"damage":1.4375,"attackSpeed":7.92,"currentStamina":29.9,"maxStamina":29.9,"staminaRegen":3.08000016,"currentXP":0,"currentGold":0}

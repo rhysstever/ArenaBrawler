@@ -23,7 +23,15 @@ public class Player : Unit
     // Update is called once per frame
     void Update()
     {
-        
+        // Temp code to give xp to the player to test leveling
+        if(Input.GetKeyDown(KeyCode.Space))
+            CollectResources(50, 0);
+
+        // Check if the player can level up
+        // TODO: restrict this check to happen only after a wave is completed
+        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game 
+            && CanLevelUp())
+            GameManager.instance.ChangeMenuState(MenuState.LevelUp);
     }
 
     /// <summary>
@@ -140,7 +148,7 @@ public class Player : Unit
     public void LevelUp(ClassType levelUpClass)
     {
         // Removes the amount of XP needed to level
-        // CollectResources(-LevelManager.instance.XPToLevel(currentLevels.Count + 1), 0); // TODO: refine XP vs levling (maybe keep track of total xp instead of removing it every levelup)
+        CollectResources(-LevelManager.instance.XPToLevel(currentLevels.Count), 0);
 
         // If the player has levels aleady,
         // Add the leveling stats of the class to the player
@@ -187,5 +195,5 @@ public class Player : Unit
     {
         int currentLevel = currentLevels.Count;
         return currentXP >= LevelManager.instance.XPToLevel(currentLevel);
-	}
+    }
 }
