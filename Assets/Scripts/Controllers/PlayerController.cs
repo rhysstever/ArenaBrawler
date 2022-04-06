@@ -8,12 +8,13 @@ public class PlayerController : MonoBehaviour
     //Declaration of variables
     public float collisionOffset = 0.0f;
     public ContactFilter2D movementFilter;
+    public float speed;
 
     //Declaration of references
     Vector2 movementInput;
     new Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
-    //Animator animator;
+    public Animator animator;
     SpriteRenderer spriteRenderer;
 
     bool canMove = true;
@@ -21,7 +22,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -29,6 +30,17 @@ public class PlayerController : MonoBehaviour
 	{
         // Determine if the player can move
         canMove = GameManager.instance.GetCurrentMenuState() == MenuState.Game;
+
+        //Get horizontal and vertical components of the Vector2 movement
+        movementInput.x = Input.GetAxisRaw("Horizontal");
+        movementInput.y = Input.GetAxisRaw("Vertical");
+
+        //Creates a new speed Vector2 based off of the input
+        speed = new Vector2(movementInput.x, movementInput.y).sqrMagnitude;
+
+        animator.SetFloat("Horizontal", movementInput.x);
+        animator.SetFloat("Vertical", movementInput .y);
+        animator.SetFloat("Speed", speed);
 	}
 
 	private void FixedUpdate()
@@ -58,16 +70,6 @@ public class PlayerController : MonoBehaviour
             else
             {
                 //animator.SetBool("isWalking", false);
-            }
-
-            //Set direction of sprite to movement direction
-            if (movementInput.x < 0)
-            {
-                spriteRenderer.flipX = true;
-            }
-            else if (movementInput.x > 0)
-            {
-                spriteRenderer.flipX = false;
             }
         }
     }
