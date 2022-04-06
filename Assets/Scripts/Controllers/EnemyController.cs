@@ -35,7 +35,8 @@ public class EnemyController : MonoBehaviour
         distance = Vector2.Distance(transform.position, player.transform.position);
         Vector2 enemyMovementDirection = player.transform.position - transform.position;
         enemyMovementDirection.Normalize();
-        //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(enemyMovementDirection.y, enemyMovementDirection.x) * Mathf.Rad2Deg;
+        print(angle);
 
         if (canMove)
         {
@@ -67,7 +68,8 @@ public class EnemyController : MonoBehaviour
                 //Check to see if the enemy can see the player
                 if (distance < enemyViewDistance)
                 {
-                    transform.position = Vector2.MoveTowards(this.transform.position, player.transform.position, GetComponent<Enemy>().movement * Time.deltaTime);
+                    //Move towards the player in the new vector
+                    transform.position = Vector2.MoveTowards(transform.position, player.transform.position, GetComponent<Enemy>().movement * Time.deltaTime);
                     //transform.rotation = Quaternion.Euler(Vector3.forward * angle);
                     return true;
                 }
