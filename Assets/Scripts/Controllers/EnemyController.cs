@@ -5,53 +5,77 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     public GameObject player;
-    public float enemyViewDistance = 4f;
+    public float enemyViewDistance;
+    public float enemyAttackDistance;
+    public float enemySpeed;
     public ContactFilter2D movementFilter;
+    public LayerMask whatIsPlayer;
+
+    private Transform target;
+    private Vector2 enemyMovement;
+    private Vector3 enemyDirection;
     private float distance;
 
     new Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
-    //Animator animator;
-    SpriteRenderer spriteRenderer;
+    Animator animator;
 
     bool canMove = true;
+    bool isInChaseRange;
+    bool isInAttackRange;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
-        //animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        target = GameObject.FindWithTag("Player").transform;
     }
 
 	private void Update()
 	{
-        // Determine if the enemy can move
+        //Determine if the enemy can move
         canMove = GameManager.instance.GetCurrentMenuState() == MenuState.Game;
+        //Determine if the enemy is moving
+        animator.SetBool("isMoving", isInChaseRange);
+
+        //Checks if the enemy is both within chase range and attack range
+        isInChaseRange = Physics2D.OverlapCircle(transform.position, enemyViewDistance, whatIsPlayer);
+        isInAttackRange = Physics2D.OverlapCircle(transform.position, enemyAttackDistance, whatIsPlayer);
+
+        //distance = Vector2.Distance(transform.position, player.transform.position);
+        enemyDirection = target.position - transform.position;
+        float angle = Mathf.Atan2(enemyDirection.y, enemyDirection.x) * Mathf.Rad2Deg;
+        enemyDirection.Normalize();
+        enemyMovement = enemyDirection;
+
     }
 
     private void FixedUpdate()
     {
-        distance = Vector2.Distance(transform.position, player.transform.position);
-        Vector2 enemyMovementDirection = player.transform.position - transform.position;
-        enemyMovementDirection.Normalize();
-        float angle = Mathf.Atan2(enemyMovementDirection.y, enemyMovementDirection.x) * Mathf.Rad2Deg;
-        print(angle);
-
-        if (canMove)
+        //If the enemy is within chase range but not within attack range
+        if(isInChaseRange && !isInAttackRange)
         {
-            //If the enemy's direction vector is not 0
-            if (enemyMovementDirection != Vector2.zero)
+            //If the enemy can move
+            if(canMove)
             {
-                //Try to move in the direction of the player
-                bool success = TryMove(enemyMovementDirection);
-
-                //If unable to move in the player's direction, don't move
-                if (!success)
+                //If the enemy's direction vector is not 0
+                if(enemyDirection != Vector3.zero)
                 {
-                    return;
+                    //Try to move in the direction of the player, and return if it was successful
+                    bool success = TryMove(enemyDirection);
+
+                    //If unable to move in the player's direction, don't move
+                    if(!success)
+                    {
+                        return;
+                    }
                 }
             }
+        }
+        if(isInAttackRange)
+        {
+            rigidbody.velocity = Vector2.zero;
         }
     }
 
@@ -70,7 +94,6 @@ public class EnemyController : MonoBehaviour
                 {
                     //Move towards the player in the new vector
                     transform.position = Vector2.MoveTowards(transform.position, player.transform.position, GetComponent<Enemy>().movement * Time.deltaTime);
-                    //transform.rotation = Quaternion.Euler(Vector3.forward * angle);
                     return true;
                 }
                 else

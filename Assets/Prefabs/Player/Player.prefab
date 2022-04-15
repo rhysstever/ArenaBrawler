@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4905386625092861399}
   - component: {fileID: 8929731497174618658}
   - component: {fileID: 3607862407130164136}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!50 &3725995824308928088
@@ -193,6 +193,8 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
+  speed: 0
+  animator: {fileID: 0}
 --- !u!114 &3607862407130164136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,6 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc2bb2a8cad4a88478515bce719c18d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitName: 
   health: 0
   movement: 0
   defense: 0
@@ -213,3 +216,5 @@ MonoBehaviour:
   healthRegen: 0
   stamina: 0
   staminaRegen: 0
+  currentXP: 0
+  currentGold: 0
