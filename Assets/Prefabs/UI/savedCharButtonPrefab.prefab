@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 3955145874334475076}
   - component: {fileID: 4880243466472536686}
   m_Layer: 5
-  m_Name: savedCharacterButton
+  m_Name: savedCharButtonPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
