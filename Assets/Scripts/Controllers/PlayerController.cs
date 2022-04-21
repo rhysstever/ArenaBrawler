@@ -9,15 +9,15 @@ public class PlayerController : MonoBehaviour
     public float collisionOffset = 0.0f;
     public ContactFilter2D movementFilter;
     public float speed;
+    Vector2 movementInput;
 
     //Declaration of references
-    Vector2 movementInput;
-    new Rigidbody2D rigidbody;
+    Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
     public Animator animator;
     SpriteRenderer spriteRenderer;
 
-    bool canMove = true;
+    bool canMove;
 
     private void Start()
     {
@@ -28,15 +28,14 @@ public class PlayerController : MonoBehaviour
 
 	private void Update()
 	{
+        speed = LevelManager.instance.player.GetComponent<Player>().movement;
+
         // Determine if the player can move
         canMove = GameManager.instance.GetCurrentMenuState() == MenuState.Game;
 
         //Get horizontal and vertical components of the Vector2 movement
         movementInput.x = Input.GetAxisRaw("Horizontal");
         movementInput.y = Input.GetAxisRaw("Vertical");
-
-        //Creates a new speed Vector2 based off of the input
-        speed = new Vector2(movementInput.x, movementInput.y).sqrMagnitude;
 
         animator.SetFloat("Horizontal", movementInput.x);
         animator.SetFloat("Vertical", movementInput .y);
@@ -64,12 +63,6 @@ public class PlayerController : MonoBehaviour
                         success = TryMove(new Vector2(0, movementInput.y));
                     }
                 }
-
-                //animator.SetBool("isWalking", success);
-            }
-            else
-            {
-                //animator.SetBool("isWalking", false);
             }
         }
     }
@@ -87,15 +80,9 @@ public class PlayerController : MonoBehaviour
                 rigidbody.MovePosition(rigidbody.position + direction * GetComponent<Player>().movement * Time.fixedDeltaTime);
                 return true;
             }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
             return false;
         }
+        return false;
     }
 
     void OnMove(InputValue movementValue)

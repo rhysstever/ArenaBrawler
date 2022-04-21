@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public GameObject player;
+    //Variable declaration
     public float enemyViewDistance;
     public float enemyAttackDistance;
     public float enemySpeed;
@@ -12,15 +12,14 @@ public class EnemyController : MonoBehaviour
     public LayerMask whatIsPlayer;
 
     private Transform target;
-    private Vector2 enemyMovement;
     private Vector3 enemyDirection;
     private float distance;
 
-    new Rigidbody2D rigidbody;
+    Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
     Animator animator;
 
-    bool canMove = true;
+    bool canMove;
     bool isInChaseRange;
     bool isInAttackRange;
 
@@ -29,7 +28,7 @@ public class EnemyController : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        target = GameObject.FindWithTag("Player").transform;
+        target = LevelManager.instance.player.transform;
     }
 
 	private void Update()
@@ -47,35 +46,26 @@ public class EnemyController : MonoBehaviour
         enemyDirection = target.position - transform.position;
         float angle = Mathf.Atan2(enemyDirection.y, enemyDirection.x) * Mathf.Rad2Deg;
         enemyDirection.Normalize();
-        enemyMovement = enemyDirection;
 
     }
 
     private void FixedUpdate()
     {
-        //If the enemy is within chase range but not within attack range
-        if(isInChaseRange && !isInAttackRange)
+        //If:
+        //Enemy is within chase range
+        //Enemy is not within attack range
+        //Enemy can move
+        //Enemy direction vector is not zero
+        if(isInChaseRange && !isInAttackRange && canMove && enemyDirection != Vector3.zero)
         {
-            //If the enemy can move
-            if(canMove)
-            {
-                //If the enemy's direction vector is not 0
-                if(enemyDirection != Vector3.zero)
-                {
-                    //Try to move in the direction of the player, and return if it was successful
-                    bool success = TryMove(enemyDirection);
-
-                    //If unable to move in the player's direction, don't move
-                    if(!success)
-                    {
-                        return;
-                    }
-                }
-            }
+            //Try to move in the direction of the player, and return if it was successful
+            bool success = TryMove(enemyDirection);
         }
-        if(isInAttackRange)
+        else if(isInAttackRange)
         {
             rigidbody.velocity = Vector2.zero;
+
+            //Attack the player
         }
     }
 
@@ -93,22 +83,11 @@ public class EnemyController : MonoBehaviour
                 if (distance < enemyViewDistance)
                 {
                     //Move towards the player in the new vector
-                    transform.position = Vector2.MoveTowards(transform.position, player.transform.position, GetComponent<Enemy>().movement * Time.deltaTime);
+                    transform.position = Vector2.MoveTowards(transform.position, target.transform.position, GetComponent<Enemy>().movement * Time.deltaTime);
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
             }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }
