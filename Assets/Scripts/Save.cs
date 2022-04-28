@@ -8,4 +8,16 @@ public class Save
 {
 	public string name;
 	public List<ClassType> classLevels;
+    public float currentHealth;
+    public float maxHealth;
+    public float healthRegen;
+    public float movement;
+    public float defense;
+    public float damage;
+    public float attackSpeed;
+    public float currentStamina;
+    public float maxStamina;
+    public float staminaRegen;
+    public int currentXP;
+    public int currentGold;
 }

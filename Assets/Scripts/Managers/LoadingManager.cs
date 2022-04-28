@@ -47,14 +47,27 @@ public class LoadingManager : MonoBehaviour
         // Create Save object
         newSave = new Save();
 
+        // Get the player class 
+        Player player = LevelManager.instance.player.GetComponent<Player>();
         // Set values of data that will be saved
-        string name = LevelManager.instance.player.GetComponent<Player>().unitName;
-        newSave.name = name;
-        newSave.classLevels = LevelManager.instance.player.GetComponent<Player>().GetLevels();
+        newSave.name = player.unitName;
+        newSave.classLevels = player.GetLevelsList();
+        newSave.currentHealth = player.currentHealth;
+        newSave.maxHealth = player.maxHealth;
+        newSave.healthRegen = player.healthRegen;
+        newSave.movement = player.movement;
+        newSave.defense = player.defense;
+        newSave.damage = player.damage;
+        newSave.attackSpeed = player.attackSpeed;
+        newSave.currentStamina = player.currentStamina;
+        newSave.maxStamina = player.maxStamina;
+        newSave.staminaRegen = player.staminaRegen;
+        newSave.currentXP = player.currentXP;
+        newSave.currentGold = player.currentGold;
 
         // Turn the Save object into a json string and save it
         string savedDataStr = JsonConvert.SerializeObject(newSave);
-        System.IO.File.WriteAllText(localSavePath + name + ".json", savedDataStr);
+        System.IO.File.WriteAllText(localSavePath + player.unitName + ".json", savedDataStr);
     }
 
     /// <summary>
@@ -73,12 +86,8 @@ public class LoadingManager : MonoBehaviour
         // Convert the json string into a Save object 
         Save loadedSave = JsonConvert.DeserializeObject<Save>(loadedDataStr);
 
-        // Set saved data as game values
-        LevelManager.instance.player.GetComponent<Player>().unitName = loadedSave.name;
-
-        // Level the character in order of the saved classes
-        foreach(ClassType level in loadedSave.classLevels)
-            LevelManager.instance.player.GetComponent<Player>().LevelUp(level);
+        // Pass the save to the player
+        LevelManager.instance.player.GetComponent<Player>().LoadStats(loadedSave);
     }
 
     /// <summary>

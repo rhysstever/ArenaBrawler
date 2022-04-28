@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public enum ClassType
@@ -43,7 +44,7 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     /// <summary>
@@ -54,27 +55,35 @@ public class LevelManager : MonoBehaviour
         classStats = new Dictionary<ClassType, ClassStats>();
 
         // Create a struct for each levelable rpg class
+        // Each stat has is a tuple
+        // Item1 = the base value a character receives if they take that class at the character's first level
+        // Item2 = the % that value increases when they take a level in that class after the character's first level (% between 0.00 and 1.00)
         ClassStats gladiatorStats = new ClassStats()
         {
-            health = (20.0f, 0),
-            healthRegen = (1.0f, 0),
-            movement = (2.5f, 0),
-            defense = (5.0f, 0),
-            damage = (2.0f, 0),
-            attackSpeed = (3.0f, 0),
-            stamina = (10.0f, 0),
-            staminaRegen = (1.0f, 0)
+            // Gladiator, slow but strong attacker
+            // Can take more hits but can't run far due to heavy armor
+            health = (20.0f, 0.3f),
+            healthRegen = (1.0f, 0.2f),
+            movement = (2.5f, 0.1f),
+            defense = (5.0f, 0.3f),
+            damage = (2.0f, 0.25f),
+            attackSpeed = (3.0f, 0.1f),
+            stamina = (10.0f, 0.15f),
+            staminaRegen = (1.0f, 0.1f)
         };
         ClassStats brawlerStats = new ClassStats()
         {
-            health = (10.0f, 0),
-            healthRegen = (2.0f, 0),
-            movement = (4.0f, 0),
-            defense = (2.0f, 0),
-            damage = (1.0f, 0),
-            attackSpeed = (6.0f, 0),
-            stamina = (20.0f, 0),
-            staminaRegen = (2.0f, 0)
+            // Brawler, quick but light hitter
+            // Bobs and weaves in and out of range
+            // Can run away from enemies easily but dies quickly if caught
+            health = (10.0f, 0.1f),
+            healthRegen = (2.0f, 0.1f),
+            movement = (4.0f, 0.3f),
+            defense = (2.0f, 0.1f),
+            damage = (1.0f, 0.15f),
+            attackSpeed = (6.0f, 0.2f),
+            stamina = (20.0f, 0.3f),
+            staminaRegen = (2.0f, 0.4f)
         };
 
         // Add each struct to the dictionary
@@ -108,7 +117,7 @@ public class LevelManager : MonoBehaviour
     /// <returns>How much XP is needed to get to that level from the previous level</returns>
     public int XPToLevel(int level)
 	{
-        return xpAmountsToLevel[level + 1]; // +1 needed because lists are indexed at 0
+        return xpAmountsToLevel[level]; 
 	}
 
     /// <summary>
@@ -119,7 +128,7 @@ public class LevelManager : MonoBehaviour
     /// <returns>The amount of total XP the player needs from their current level to reach the goal level</returns>
     public int XPToLevel(GameObject character, int goalLevel)
 	{
-        int startingLevel = character.GetComponent<Player>().GetLevels().Count;
+        int startingLevel = character.GetComponent<Player>().GetLevelsList().Count;
         // Make sure the player is not already at or past the goal level
         if(startingLevel >= goalLevel)
             return 0;
