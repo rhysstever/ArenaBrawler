@@ -6,11 +6,15 @@ public class Enemy : Unit
 {
     private int xpAmount;
     private int goldAmount;
+    private float enemyViewDistance;
+    private float enemyAttackDistance;
 
     // Start is called before the first frame update
     void Start()
     {
         movement = 2;
+        enemyViewDistance = 3f;
+        enemyAttackDistance = 1f;
     }
 
     // Update is called once per frame
@@ -38,6 +42,15 @@ public class Enemy : Unit
 	{
         return (xpAmount, goldAmount);
 	}
+
+    /// <summary>
+    /// Get the enemyViewDistance and the enemyAttackDistance
+    /// </summary>
+    /// <returns></returns>
+    public (float, float) GetViewAndAttackRadii()
+    {
+        return (enemyViewDistance, enemyAttackDistance);
+    }
 
     /// <summary>
     /// Removes health from the enemy; checks for death
