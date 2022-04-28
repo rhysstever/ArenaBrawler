@@ -4,53 +4,68 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public GameObject player;
-    public float enemyViewDistance = 4f;
+    //Variable declaration
+    public float enemyViewDistance;
+    public float enemyAttackDistance;
+    public float enemySpeed;
     public ContactFilter2D movementFilter;
+    public LayerMask whatIsPlayer;
+
+    private Transform target;
+    private Vector3 enemyDirection;
     private float distance;
 
-    new Rigidbody2D rigidbody;
+    Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
-    //Animator animator;
-    SpriteRenderer spriteRenderer;
+    Animator animator;
 
-    bool canMove = true;
+    bool canMove;
+    bool isInChaseRange;
+    bool isInAttackRange;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
-        //animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        target = LevelManager.instance.player.transform;
     }
 
 	private void Update()
 	{
-        // Determine if the enemy can move
+        //Determine if the enemy can move
         canMove = GameManager.instance.GetCurrentMenuState() == MenuState.Game;
+        //Determine if the enemy is moving
+        animator.SetBool("isMoving", isInChaseRange);
+
+        //Checks if the enemy is both within chase range and attack range
+        isInChaseRange = Physics2D.OverlapCircle(transform.position, enemyViewDistance, whatIsPlayer);
+        isInAttackRange = Physics2D.OverlapCircle(transform.position, enemyAttackDistance, whatIsPlayer);
+
+        //distance = Vector2.Distance(transform.position, player.transform.position);
+        enemyDirection = target.position - transform.position;
+        float angle = Mathf.Atan2(enemyDirection.y, enemyDirection.x) * Mathf.Rad2Deg;
+        enemyDirection.Normalize();
+
     }
 
     private void FixedUpdate()
     {
-        distance = Vector2.Distance(transform.position, player.transform.position);
-        Vector2 enemyMovementDirection = player.transform.position - transform.position;
-        enemyMovementDirection.Normalize();
-        //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        if (canMove)
+        //If:
+        //Enemy is within chase range
+        //Enemy is not within attack range
+        //Enemy can move
+        //Enemy direction vector is not zero
+        if(isInChaseRange && !isInAttackRange && canMove && enemyDirection != Vector3.zero)
         {
-            //If the enemy's direction vector is not 0
-            if (enemyMovementDirection != Vector2.zero)
-            {
-                //Try to move in the direction of the player
-                bool success = TryMove(enemyMovementDirection);
+            //Try to move in the direction of the player, and return if it was successful
+            bool success = TryMove(enemyDirection);
+        }
+        else if(isInAttackRange)
+        {
+            rigidbody.velocity = Vector2.zero;
 
-                //If unable to move in the player's direction, don't move
-                if (!success)
-                {
-                    return;
-                }
-            }
+            //Attack the player
         }
     }
 
@@ -67,23 +82,12 @@ public class EnemyController : MonoBehaviour
                 //Check to see if the enemy can see the player
                 if (distance < enemyViewDistance)
                 {
-                    transform.position = Vector2.MoveTowards(this.transform.position, player.transform.position, GetComponent<Enemy>().movement * Time.deltaTime);
-                    //transform.rotation = Quaternion.Euler(Vector3.forward * angle);
+                    //Move towards the player in the new vector
+                    transform.position = Vector2.MoveTowards(transform.position, target.transform.position, GetComponent<Enemy>().movement * Time.deltaTime);
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
             }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }
