@@ -15,7 +15,7 @@ public class EnemyController : MonoBehaviour
     private Vector3 enemyDirection;
     private float distance;
 
-    Rigidbody2D rigidbody;
+    new Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
     Animator animator;
 

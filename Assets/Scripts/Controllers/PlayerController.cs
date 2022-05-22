@@ -10,13 +10,14 @@ public class PlayerController : MonoBehaviour
     public ContactFilter2D movementFilter;
     public float speed;
     Vector2 movementInput;
+
     public LayerMask enemyLayers;
     public float attackRange = 0.5f;
     public Transform attackPoint;
     public float attackDamage = 40f;
 
     //Declaration of references
-    Rigidbody2D rigidbody;
+    new Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
     public Animator animator;
     SpriteRenderer spriteRenderer;
