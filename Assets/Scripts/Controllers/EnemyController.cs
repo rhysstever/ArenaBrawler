@@ -6,10 +6,13 @@ public class EnemyController : MonoBehaviour
 {
     //Variable declaration
     public float enemyViewDistance;
-    public float enemyAttackDistance;
+    public float enemyAttackDistance = 0.25f;
     public float enemySpeed;
     public ContactFilter2D movementFilter;
     public LayerMask whatIsPlayer;
+
+    public Transform enemyAttackPoint;
+    public float enemyAttackDamage = 40f;
 
     private Transform target;
     private Vector3 enemyDirection;
@@ -31,8 +34,8 @@ public class EnemyController : MonoBehaviour
         target = LevelManager.instance.player.transform;
     }
 
-	private void Update()
-	{
+    private void Update()
+    {
         //Determine if the enemy can move
         canMove = GameManager.instance.GetCurrentMenuState() == MenuState.Game;
         //Determine if the enemy is moving
@@ -56,16 +59,17 @@ public class EnemyController : MonoBehaviour
         //Enemy is not within attack range
         //Enemy can move
         //Enemy direction vector is not zero
-        if(isInChaseRange && !isInAttackRange && canMove && enemyDirection != Vector3.zero)
+        if (isInChaseRange && !isInAttackRange && canMove && enemyDirection != Vector3.zero)
         {
             //Try to move in the direction of the player, and return if it was successful
             bool success = TryMove(enemyDirection);
         }
-        else if(isInAttackRange)
+        else if (isInAttackRange)
         {
             rigidbody.velocity = Vector2.zero;
 
             //Attack the player
+
         }
     }
 
@@ -89,5 +93,24 @@ public class EnemyController : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private void EnemyAttack()
+    {
+        //Play enemy attack animation
+        animator.SetTrigger("Attack");
+        //Detect player in range of attack
+        Collider2D[] hitPlayer = Physics2D.OverlapCircleAll(enemyAttackPoint.position, enemyAttackDistance, whatIsPlayer);
+        //Damage player
+        foreach (Collider2D player in hitPlayer)
+        {
+            Debug.Log("We hit " + player.name);
+            player.GetComponent<Player>().TakeDamage(enemyAttackDamage);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(enemyAttackPoint.position, enemyAttackDistance);
     }
 }

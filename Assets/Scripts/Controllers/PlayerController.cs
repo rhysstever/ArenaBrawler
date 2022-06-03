@@ -12,9 +12,9 @@ public class PlayerController : MonoBehaviour
     Vector2 movementInput;
 
     public LayerMask enemyLayers;
-    public float attackRange = 0.5f;
-    public Transform attackPoint;
-    public float attackDamage = 40f;
+    public float playerAttackRange = 0.25f;
+    public Transform playerAttackPoint;
+    public float playerAttackDamage = 40f;
 
     //Declaration of references
     new Rigidbody2D rigidbody;
@@ -104,20 +104,20 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerAttack()
     {
-        //Play attack animation
+        //Play player attack animation
         animator.SetTrigger("Attack");
         //Detect enemies in range of attack
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(playerAttackPoint.position, playerAttackRange, enemyLayers);
         //Damage enemies
         foreach (Collider2D enemy in hitEnemies)
         {
             Debug.Log("We hit " + enemy.name);
-            enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+            enemy.GetComponent<Enemy>().TakeDamage(playerAttackDamage);
         }
     }
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        Gizmos.DrawWireSphere(playerAttackPoint.position, playerAttackRange);
     }
 }

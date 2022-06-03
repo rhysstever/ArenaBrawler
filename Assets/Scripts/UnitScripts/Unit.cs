@@ -9,13 +9,11 @@ public class Unit : MonoBehaviour
     public float maxHealth;
     public float movement;
     public float defense;
-    public float damage;
-    public float attackSpeed;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
