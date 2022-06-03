@@ -11,8 +11,13 @@ public class PlayerController : MonoBehaviour
     public float speed;
     Vector2 movementInput;
 
+    public LayerMask enemyLayers;
+    public float playerAttackRange = 0.25f;
+    public Transform playerAttackPoint;
+    public float playerAttackDamage = 40f;
+
     //Declaration of references
-    Rigidbody2D rigidbody;
+    new Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
     public Animator animator;
     SpriteRenderer spriteRenderer;
@@ -40,6 +45,13 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Horizontal", movementInput.x);
         animator.SetFloat("Vertical", movementInput .y);
         animator.SetFloat("Speed", speed);
+
+        //Player attack script
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            PlayerAttack();
+        }
+
 	}
 
 	private void FixedUpdate()
@@ -85,8 +97,27 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-    void OnMove(InputValue movementValue)
+    private void OnMove(InputValue movementValue)
     {
         movementInput = movementValue.Get<Vector2>();
+    }
+
+    private void PlayerAttack()
+    {
+        //Play player attack animation
+        animator.SetTrigger("Attack");
+        //Detect enemies in range of attack
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(playerAttackPoint.position, playerAttackRange, enemyLayers);
+        //Damage enemies
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            Debug.Log("We hit " + enemy.name);
+            enemy.GetComponent<Enemy>().TakeDamage(playerAttackDamage);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(playerAttackPoint.position, playerAttackRange);
     }
 }

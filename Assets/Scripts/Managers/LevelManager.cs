@@ -62,28 +62,29 @@ public class LevelManager : MonoBehaviour
         {
             // Gladiator, slow but strong attacker
             // Can take more hits but can't run far due to heavy armor
-            health = (20.0f, 0.3f),
-            healthRegen = (1.0f, 0.2f),
-            movement = (2.5f, 0.1f),
+            health = (25.0f, 0.3f),
+            healthRegen = (0.4f, 0.2f),
+            movement = (2.0f, 0.1f),
             defense = (5.0f, 0.3f),
             damage = (2.0f, 0.25f),
-            attackSpeed = (3.0f, 0.1f),
+            attackStaminaCost = (2.0f, 0.1f),
             stamina = (10.0f, 0.15f),
-            staminaRegen = (1.0f, 0.1f)
+            staminaRegen = (0.5f, 0.1f)
         };
+
         ClassStats brawlerStats = new ClassStats()
         {
             // Brawler, quick but light hitter
             // Bobs and weaves in and out of range
             // Can run away from enemies easily but dies quickly if caught
-            health = (10.0f, 0.1f),
-            healthRegen = (2.0f, 0.1f),
-            movement = (4.0f, 0.3f),
+            health = (15.0f, 0.1f),
+            healthRegen = (0.4f, 0.1f),
+            movement = (2.5f, 0.3f),
             defense = (2.0f, 0.1f),
             damage = (1.0f, 0.15f),
-            attackSpeed = (6.0f, 0.2f),
-            stamina = (20.0f, 0.3f),
-            staminaRegen = (2.0f, 0.4f)
+            attackStaminaCost = (1.0f, 0.2f),
+            stamina = (10.0f, 0.3f),
+            staminaRegen = (0.5f, 0.4f)
         };
 
         // Add each struct to the dictionary
@@ -154,7 +155,7 @@ public struct ClassStats
     public (float, float) movement;
     public (float, float) defense;
     public (float, float) damage;
-    public (float, float) attackSpeed;
+    public (float, float) attackStaminaCost;
     public (float, float) stamina;
     public (float, float) staminaRegen;
 }

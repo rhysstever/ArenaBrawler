@@ -14,7 +14,7 @@ public class Save
     public float movement;
     public float defense;
     public float damage;
-    public float attackSpeed;
+    public float attackStaminaCost;
     public float currentStamina;
     public float maxStamina;
     public float staminaRegen;
