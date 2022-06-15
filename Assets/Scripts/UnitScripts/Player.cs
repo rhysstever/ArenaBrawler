@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Player : Unit
 {
+    public float damage;
     public float healthRegen;
     public float currentStamina;
     public float maxStamina;
     public float staminaRegen;
-    public float damage;
     public float attackStaminaCost;
 
     public int currentXP;
@@ -25,16 +25,17 @@ public class Player : Unit
     // Update is called once per frame
     void Update()
     {
-        // Temp code to give xp to the player to test leveling
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game
+            && Input.GetKeyDown(KeyCode.E))
             CollectResources(50, 0);
 
         // Check if the player can level up
         // TODO: restrict this check to happen only after a wave is completed
-        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game 
+        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game
+            && currentLevels.Count > 0
             && CanLevelUp())
-            GameManager.instance.ChangeMenuState(MenuState.LevelUp);
-    }
+            LevelUp(currentLevels[0]);
+	}
 
     /// <summary>
     /// Clears all of the stats of the player
@@ -65,34 +66,34 @@ public class Player : Unit
     /// <param name="classStats">The class the stats are being set from</param>
     public void SetStats(ClassStats classStats)
     {
-        currentHealth = classStats.health.Item1;
-        maxHealth = classStats.health.Item1;
-        healthRegen = classStats.healthRegen.Item1;
-        movement = classStats.movement.Item1;
-        defense = classStats.defense.Item1;
-        damage = classStats.damage.Item1;
-        attackStaminaCost = classStats.attackStaminaCost.Item1;
-        currentStamina = classStats.stamina.Item1;
-        maxStamina = classStats.stamina.Item1;
-        staminaRegen = classStats.staminaRegen.Item1;
+        currentHealth = classStats.health;
+        maxHealth = classStats.health;
+        healthRegen = classStats.healthRegen;
+        movement = classStats.movement;
+        defense = classStats.defense;
+        damage = classStats.damage;
+        attackStaminaCost = classStats.attackStaminaCost;
+        currentStamina = classStats.stamina;
+        maxStamina = classStats.stamina;
+        staminaRegen = classStats.staminaRegen;
     }
 
     /// <summary>
     /// Increases the player's stats based on the leveled class
     /// </summary>
-    /// <param name="classStats">The class the player has leveled</param>
-    public void IncreaseStats(ClassStats classStats)
+    /// <param name="classType">The class the player has leveled</param>
+    public void IncreaseStats(ClassType classType)
     {
-        currentHealth *= 1 + classStats.health.Item2;
-        maxHealth *= 1 + classStats.health.Item2;
-        healthRegen *= 1 + classStats.healthRegen.Item2;
-        movement *= 1 + classStats.movement.Item2;
-        defense *= 1 + classStats.defense.Item2;
-        damage *= 1 + classStats.damage.Item2;
-        attackStaminaCost *= 1 + classStats.attackStaminaCost.Item2;
-        currentStamina *= 1 + classStats.stamina.Item2;
-        maxStamina *= 1 + classStats.stamina.Item2;
-        staminaRegen *= 1 + classStats.staminaRegen.Item2;
+        currentHealth       += LevelManager.instance.GetStatAmountGained("health", classType);
+        maxHealth           += LevelManager.instance.GetStatAmountGained("health", classType);
+        healthRegen         += LevelManager.instance.GetStatAmountGained("healthRegen", classType);
+        movement            += LevelManager.instance.GetStatAmountGained("movement", classType);
+        defense             += LevelManager.instance.GetStatAmountGained("defense", classType);
+        damage              += LevelManager.instance.GetStatAmountGained("damage", classType);
+        attackStaminaCost   += LevelManager.instance.GetStatAmountGained("attackStaminaCost", classType);
+        currentStamina      += LevelManager.instance.GetStatAmountGained("stamina", classType);
+        maxStamina          += LevelManager.instance.GetStatAmountGained("stamina", classType);
+        staminaRegen        += LevelManager.instance.GetStatAmountGained("staminaRegen", classType);
     }
 
     /// <summary>
@@ -121,10 +122,13 @@ public class Player : Unit
     /// Gets the levels/classes of the character in a simple list format
     /// </summary>
     /// <returns>The list of the order of classes of the current character</returns>
-    public List<ClassType> GetLevelsList()
-    {
-        return currentLevels;
-    }
+    public List<ClassType> GetLevelsList() { return currentLevels; }
+
+    /// <summary>
+    /// Get the number of levels the player has
+    /// </summary>
+    /// <returns>The number of levels</returns>
+    public int GetsLevelsCount() { return currentLevels.Count; }
 
     /// <summary>
     /// Gets the levels of the character in a dictionary format, broken down by class
@@ -156,7 +160,7 @@ public class Player : Unit
         // Add the leveling stats of the class to the player
         // (the player already received base stats from their initial class)
         if(currentLevels.Count > 0)
-            IncreaseStats(LevelManager.instance.classStats[levelUpClass]);
+            IncreaseStats(levelUpClass);
         // If the player does not have a level in that class,
         // Add the base stats of the class to the player
         // (it is the first total level of the player)

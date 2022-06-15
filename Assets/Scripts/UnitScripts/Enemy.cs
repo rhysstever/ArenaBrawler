@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : Unit
 {
+    public float attackSpeed;
     private int xpAmount;
     private int goldAmount;
     private float damage;

@@ -62,14 +62,14 @@ public class LevelManager : MonoBehaviour
         {
             // Gladiator, slow but strong attacker
             // Can take more hits but can't run far due to heavy armor
-            health = (25.0f, 0.3f),
-            healthRegen = (0.4f, 0.2f),
-            movement = (2.0f, 0.1f),
-            defense = (5.0f, 0.3f),
-            damage = (2.0f, 0.25f),
-            attackStaminaCost = (2.0f, 0.1f),
-            stamina = (10.0f, 0.15f),
-            staminaRegen = (0.5f, 0.1f)
+            health = 25.0f,
+            healthRegen = 0.4f,
+            movement = 2.0f,
+            defense = 5.0f,
+            damage = 2.0f,
+            attackStaminaCost = 2.0f,
+            stamina = 10.0f,
+            staminaRegen = 0.5f
         };
 
         ClassStats brawlerStats = new ClassStats()
@@ -77,14 +77,14 @@ public class LevelManager : MonoBehaviour
             // Brawler, quick but light hitter
             // Bobs and weaves in and out of range
             // Can run away from enemies easily but dies quickly if caught
-            health = (15.0f, 0.1f),
-            healthRegen = (0.4f, 0.1f),
-            movement = (2.5f, 0.3f),
-            defense = (2.0f, 0.1f),
-            damage = (1.0f, 0.15f),
-            attackStaminaCost = (1.0f, 0.2f),
-            stamina = (10.0f, 0.3f),
-            staminaRegen = (0.5f, 0.4f)
+            health = 15.0f,
+            healthRegen = 0.6f,
+            movement = 2.5f,
+            defense = 3.0f,
+            damage = 1.0f,
+            attackStaminaCost = 1.0f,
+            stamina = 10.0f,
+            staminaRegen = 0.5f
         };
 
         // Add each struct to the dictionary
@@ -99,16 +99,16 @@ public class LevelManager : MonoBehaviour
 	{
         xpAmountsToLevel = new List<int>();
 
-        xpAmountsToLevel.Add(0); // Level 1 : no XP required
-        xpAmountsToLevel.Add(100); 
+        xpAmountsToLevel.Add(0);    // Level 1 : reached upon creating the character
+        xpAmountsToLevel.Add(100);
         xpAmountsToLevel.Add(150);
         xpAmountsToLevel.Add(200);
-        xpAmountsToLevel.Add(250); // Level 5
+        xpAmountsToLevel.Add(250);  // Level 5
         xpAmountsToLevel.Add(300);
         xpAmountsToLevel.Add(350);
         xpAmountsToLevel.Add(400);
         xpAmountsToLevel.Add(450);
-        xpAmountsToLevel.Add(500); // Level 10 : "max" level (for now)
+        xpAmountsToLevel.Add(500);  // Level 10 : "max" level (for now)
     }
 
     /// <summary>
@@ -143,19 +143,64 @@ public class LevelManager : MonoBehaviour
 
         return totalXPNeeded;
 	}
+
+    /// <summary>
+    /// Gets the amount a specific stat will be increased by
+    /// </summary>
+    /// <param name="statName">The name of the stat</param>
+    /// <param name="classType">The class being leveled</param>
+    /// <returns></returns>
+    public float GetStatAmountGained(string statName, ClassType classType)
+	{
+        switch(statName.ToLower())
+        {
+            case "health":
+                // Formula
+                return UseFormula(classStats[classType].health, player.GetComponent<Player>().GetsLevelsCount());
+            case "movement":
+                // 6% of current value
+                return 0.06f * player.GetComponent<Player>().movement;
+            case "defense":
+                // 12% of current value
+                return 0.12f * player.GetComponent<Player>().defense;
+            case "damage":
+                // Formula
+                return UseFormula(classStats[classType].damage, player.GetComponent<Player>().GetsLevelsCount());
+            case "attackstaminacost":
+                // -5% of current value
+                return -0.05f * player.GetComponent<Player>().attackStaminaCost;
+            case "healthregen":
+                // Formula
+                return UseFormula(classStats[classType].healthRegen, player.GetComponent<Player>().GetsLevelsCount());
+            case "stamina":
+                // 15% of initial value
+                return 0.15f * classStats[classType].stamina;
+            case "staminaregen":
+                // 15% of initial value
+                return 0.15f * classStats[classType].staminaRegen;
+            default:
+                return 0.0f;
+        }
+	}
+
+    /// <summary>
+    /// Uses a squareroot formula 
+    /// </summary>
+    /// <param name="initalValue">The value of the stat when the character was at level 1</param>
+    /// <param name="level">The player's current level (soon to be previous level)</param>
+    /// <returns></returns>
+    private float UseFormula(float initalValue, int level) { return (1 - Mathf.Sqrt(level / 30.0f)) * initalValue; }
 }
 
 public struct ClassStats
 {
-    // For each stat
-    // Item1: base value
-    // Item2: level modifier value
-    public (float, float) health;
-    public (float, float) healthRegen;
-    public (float, float) movement;
-    public (float, float) defense;
-    public (float, float) damage;
-    public (float, float) attackStaminaCost;
-    public (float, float) stamina;
-    public (float, float) staminaRegen;
+    // Initial values for each class
+    public float health;
+    public float healthRegen;
+    public float movement;
+    public float defense;
+    public float damage;
+    public float attackStaminaCost;
+    public float stamina;
+    public float staminaRegen;
 }

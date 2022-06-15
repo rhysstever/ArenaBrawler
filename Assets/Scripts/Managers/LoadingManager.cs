@@ -94,8 +94,5 @@ public class LoadingManager : MonoBehaviour
     /// A getter helper method for the local save path
     /// </summary>
     /// <returns>The local save path</returns>
-    public string GetLocalSavePath()
-	{
-        return localSavePath;
-	}
+    public string GetLocalSavePath() { return localSavePath; }
 }
