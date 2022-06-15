@@ -71,6 +71,7 @@ public class LevelManager : MonoBehaviour
             stamina = 10.0f,
             staminaRegen = 0.5f
         };
+
         ClassStats brawlerStats = new ClassStats()
         {
             // Brawler, quick but light hitter

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : Unit
 {
+    public float damage;
     public float healthRegen;
     public float currentStamina;
     public float maxStamina;
@@ -178,8 +179,16 @@ public class Player : Unit
         base.TakeDamage(amount);
 
         if(currentHealth <= 0.0f)
+        {
+            PlayerDeath();
             GameManager.instance.ChangeMenuState(MenuState.GameEnd);
+        }
 	}
+
+    public void PlayerDeath()
+    {
+        Debug.Log("Player died!");
+    }
 
     /// <summary>
     /// Adds xp and gold to the player
