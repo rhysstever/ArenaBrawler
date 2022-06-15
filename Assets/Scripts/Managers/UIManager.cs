@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
     private Canvas canvas;
 
     [SerializeField]    // Empty parent gameObjects
-    private GameObject mainMenuParent, selectParent, createCharacterParent, gameParent, levelUpParent, pauseParent, gameEndParent;
+    private GameObject mainMenuParent, selectParent, createCharacterParent, gameParent, pauseParent, gameEndParent;
 
     [SerializeField]    // Main Menu Buttons
     private GameObject playButton, quitButton;
@@ -49,9 +49,6 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]    // Game Text
     private GameObject characterNameText, classText;
-
-    [SerializeField]    // Level Up Buttons
-    private GameObject levelUpGladiatorButton, levelUpBrawlerButton;
 
     [SerializeField]    // Pause Buttons
     private GameObject resumeButton, saveButton, pauseToMainMenuButton;
@@ -93,9 +90,6 @@ public class UIManager : MonoBehaviour
         // Character Create buttons
         createCharacterButton.GetComponent<Button>().onClick.AddListener(() => CreateNewCharacterButtonClicked());
         createCharacterToSelectButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Select));
-        // Level Up buttons
-        levelUpGladiatorButton.GetComponent<Button>().onClick.AddListener(() => LevelUpClassButtonClicked(ClassType.Gladiator));
-        levelUpBrawlerButton.GetComponent<Button>().onClick.AddListener(() => LevelUpClassButtonClicked(ClassType.Brawler));
         // Pause buttons
         resumeButton.GetComponent<Button>().onClick.AddListener(() => GameManager.instance.ChangeMenuState(MenuState.Game));
         saveButton.GetComponent<Button>().onClick.AddListener(() => LoadingManager.instance.CreateSave());
@@ -125,8 +119,6 @@ public class UIManager : MonoBehaviour
                     GameManager.instance.ChangeMenuState(MenuState.Pause);
                 else if(Input.GetKeyDown(KeyCode.Tab))
                     GameManager.instance.ChangeMenuState(MenuState.GameEnd);
-                break;
-            case MenuState.LevelUp:
                 break;
             case MenuState.Pause:
                 // When game is paused, key controls:
@@ -170,9 +162,6 @@ public class UIManager : MonoBehaviour
                 // Update the text of the character
                 characterNameText.GetComponent<TMP_Text>().text = "Name: " + LevelManager.instance.player.GetComponent<Player>().unitName;
                 UpdatePlayerLevelText();
-                break;
-            case MenuState.LevelUp:
-                levelUpParent.SetActive(true);
                 break;
             case MenuState.Pause:
                 pauseParent.SetActive(true);
@@ -378,15 +367,4 @@ public class UIManager : MonoBehaviour
 
         classText.GetComponent<TMP_Text>().text = classStr;
 	}
-
-    // === Level Up Menu Methods ===
-    /// <summary>
-    /// Levels up the player by a specific class
-    /// </summary>
-    /// <param name="classType">The class to level up</param>
-    private void LevelUpClassButtonClicked(ClassType classType) 
-    {
-        LevelManager.instance.player.GetComponent<Player>().LevelUp(classType);
-        GameManager.instance.ChangeMenuState(MenuState.Game);
-    }
 }

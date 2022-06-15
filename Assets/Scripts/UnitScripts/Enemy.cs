@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : Unit
 {
+    public float attackSpeed;
     private int xpAmount;
     private int goldAmount;
     private float enemyViewDistance;
@@ -12,6 +13,7 @@ public class Enemy : Unit
     // Start is called before the first frame update
     void Start()
     {
+        attackSpeed = 2;
         movement = 2;
         enemyViewDistance = 3f;
         enemyAttackDistance = 1f;

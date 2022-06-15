@@ -58,7 +58,7 @@ public class LoadingManager : MonoBehaviour
         newSave.movement = player.movement;
         newSave.defense = player.defense;
         newSave.damage = player.damage;
-        newSave.attackSpeed = player.attackSpeed;
+        newSave.attackStaminaCost = player.attackStaminaCost;
         newSave.currentStamina = player.currentStamina;
         newSave.maxStamina = player.maxStamina;
         newSave.staminaRegen = player.staminaRegen;
@@ -94,8 +94,5 @@ public class LoadingManager : MonoBehaviour
     /// A getter helper method for the local save path
     /// </summary>
     /// <returns>The local save path</returns>
-    public string GetLocalSavePath()
-	{
-        return localSavePath;
-	}
+    public string GetLocalSavePath() { return localSavePath; }
 }

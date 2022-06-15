@@ -10,7 +10,6 @@ public class Unit : MonoBehaviour
     public float movement;
     public float defense;
     public float damage;
-    public float attackSpeed;
 
     // Start is called before the first frame update
     void Start()
