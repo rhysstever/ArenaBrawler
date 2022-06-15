@@ -425,7 +425,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &194994676
 GameObject:
@@ -1028,7 +1028,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &584446373
 PrefabInstance:
@@ -1047,7 +1047,7 @@ PrefabInstance:
       objectReference: {fileID: 518876256}
     - target: {fileID: 843323565858011548, guid: 053497d7bf9b19e4e8c83e30ec65ec87, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 843323565858011548, guid: 053497d7bf9b19e4e8c83e30ec65ec87, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1906,7 +1906,7 @@ RectTransform:
   - {fileID: 1442778725}
   - {fileID: 681680339}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2056,7 +2056,6 @@ MonoBehaviour:
   selectParent: {fileID: 804533973}
   createCharacterParent: {fileID: 596700098}
   gameParent: {fileID: 1130439264}
-  levelUpParent: {fileID: 0}
   pauseParent: {fileID: 1442778724}
   gameEndParent: {fileID: 681680338}
   playButton: {fileID: 1488379996}
@@ -2073,8 +2072,6 @@ MonoBehaviour:
   characterClassTogglesParent: {fileID: 645971852}
   characterNameText: {fileID: 916421108490916017}
   classText: {fileID: 1474061051}
-  levelUpGladiatorButton: {fileID: 0}
-  levelUpBrawlerButton: {fileID: 0}
   resumeButton: {fileID: 940060542}
   saveButton: {fileID: 1356672829}
   pauseToMainMenuButton: {fileID: 236311912}
@@ -39883,7 +39880,7 @@ Transform:
   - {fileID: 1147926921}
   - {fileID: 1771994146}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1442778724
 GameObject:
@@ -42093,25 +42090,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5367953966041116266, guid: 3aba66554bef00c4ea07e8a72e2d206b, type: 3}
   m_PrefabInstance: {fileID: 1642715804}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &2080574602
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2037281892}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 772efbf52c35c734b82f3949c2b5fa3f, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &2098701520
 PrefabInstance:
   m_ObjectHideFlags: 0

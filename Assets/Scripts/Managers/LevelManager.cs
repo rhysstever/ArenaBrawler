@@ -144,6 +144,12 @@ public class LevelManager : MonoBehaviour
         return totalXPNeeded;
 	}
 
+    /// <summary>
+    /// Gets the amount a specific stat will be increased by
+    /// </summary>
+    /// <param name="statName">The name of the stat</param>
+    /// <param name="classType">The class being leveled</param>
+    /// <returns></returns>
     public float GetStatAmountGained(string statName, ClassType classType)
 	{
         switch(statName.ToLower())
@@ -177,6 +183,12 @@ public class LevelManager : MonoBehaviour
         }
 	}
 
+    /// <summary>
+    /// Uses a squareroot formula 
+    /// </summary>
+    /// <param name="initalValue">The value of the stat when the character was at level 1</param>
+    /// <param name="level">The player's current level (soon to be previous level)</param>
+    /// <returns></returns>
     private float UseFormula(float initalValue, int level) { return (1 - Mathf.Sqrt(level / 30.0f)) * initalValue; }
 }
 
