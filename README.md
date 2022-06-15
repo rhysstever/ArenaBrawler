@@ -10,4 +10,4 @@ This is where we create and outline different tasks and one of us will pick it u
 
 ## Credits
 **Developers**  
-Quinn (aka. Zach Jackson) and Rhys Stever
+Skye (aka. Zach Jackson) and Rhys Stever
