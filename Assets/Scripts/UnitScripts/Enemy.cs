@@ -6,15 +6,24 @@ public class Enemy : Unit
 {
     private int xpAmount;
     private int goldAmount;
+    private float damage;
+    private float attackRate;
     private float enemyViewDistance;
     private float enemyAttackDistance;
 
     // Start is called before the first frame update
     void Start()
     {
-        movement = 2;
-        enemyViewDistance = 3f;
-        enemyAttackDistance = 1f;
+        maxHealth = 10.0f;
+        currentHealth = maxHealth;
+        movement = 1.5f;
+        defense = 1.0f;
+        damage = 4.0f;
+        attackRate = 1.5f;
+        enemyViewDistance = 1f;
+        enemyAttackDistance = 0.25f;
+        xpAmount = 20;
+        goldAmount = 5;
     }
 
     // Update is called once per frame
@@ -62,6 +71,14 @@ public class Enemy : Unit
 
         // Check for death
         if(currentHealth <= 0.0f)
+        {
+            EnemyDeath();
             LevelManager.instance.player.GetComponent<Player>().CollectResources(xpAmount, goldAmount);
+        }
 	}
+
+    public void EnemyDeath()
+    {
+        Debug.Log("Enemy died!");
+    }
 }

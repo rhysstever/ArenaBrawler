@@ -8,6 +8,8 @@ public class Player : Unit
     public float currentStamina;
     public float maxStamina;
     public float staminaRegen;
+    public float damage;
+    public float attackStaminaCost;
 
     public int currentXP;
     public int currentGold;
@@ -46,7 +48,7 @@ public class Player : Unit
         movement = 0;
         defense = 0;
         damage = 0;
-        attackSpeed = 0;
+        attackStaminaCost = 0;
         currentStamina = 0;
         maxStamina = 0;
         staminaRegen = 0;
@@ -69,7 +71,7 @@ public class Player : Unit
         movement = classStats.movement.Item1;
         defense = classStats.defense.Item1;
         damage = classStats.damage.Item1;
-        attackSpeed = classStats.attackSpeed.Item1;
+        attackStaminaCost = classStats.attackStaminaCost.Item1;
         currentStamina = classStats.stamina.Item1;
         maxStamina = classStats.stamina.Item1;
         staminaRegen = classStats.staminaRegen.Item1;
@@ -87,7 +89,7 @@ public class Player : Unit
         movement *= 1 + classStats.movement.Item2;
         defense *= 1 + classStats.defense.Item2;
         damage *= 1 + classStats.damage.Item2;
-        attackSpeed *= 1 + classStats.attackSpeed.Item2;
+        attackStaminaCost *= 1 + classStats.attackStaminaCost.Item2;
         currentStamina *= 1 + classStats.stamina.Item2;
         maxStamina *= 1 + classStats.stamina.Item2;
         staminaRegen *= 1 + classStats.staminaRegen.Item2;
@@ -107,7 +109,7 @@ public class Player : Unit
         movement = savedStats.movement;
         defense = savedStats.defense;
         damage = savedStats.damage;
-        attackSpeed = savedStats.attackSpeed;
+        attackStaminaCost = savedStats.attackStaminaCost;
         currentStamina = savedStats.currentStamina;
         maxStamina = savedStats.maxStamina;
         staminaRegen = savedStats.staminaRegen;
@@ -173,8 +175,16 @@ public class Player : Unit
         base.TakeDamage(amount);
 
         if(currentHealth <= 0.0f)
+        {
+            PlayerDeath();
             GameManager.instance.ChangeMenuState(MenuState.GameEnd);
+        }
 	}
+
+    public void PlayerDeath()
+    {
+        Debug.Log("Player died!");
+    }
 
     /// <summary>
     /// Adds xp and gold to the player
