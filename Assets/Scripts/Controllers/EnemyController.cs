@@ -4,27 +4,31 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    //Variable declaration
+    #region Public Variables
+    public ContactFilter2D movementFilter;
+    public LayerMask whatIsPlayer;
+    public Transform enemyAttackPoint;
     public float enemyViewDistance;
     public float enemyAttackDistance = 0.25f;
     public float enemySpeed;
-    public ContactFilter2D movementFilter;
-    public LayerMask whatIsPlayer;
-
-    public Transform enemyAttackPoint;
+    public float attackTimer; //Timer for cooldown between attacks
     public float enemyAttackDamage = 40f;
+    #endregion
 
+    #region Private Variables
     private Transform target;
     private Vector3 enemyDirection;
+    private Animator animator;
     private float distance;
+    private float intTimer = 3f;
+    private bool canMove;
+    private bool isInChaseRange;
+    private bool isInAttackRange;
+    private bool attackCooldown;
+    #endregion
 
     new Rigidbody2D rigidbody;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
-    Animator animator;
-
-    bool canMove;
-    bool isInChaseRange;
-    bool isInAttackRange;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +36,7 @@ public class EnemyController : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         target = LevelManager.instance.player.transform;
+        intTimer = attackTimer;
     }
 
     private void Update()
@@ -69,6 +74,7 @@ public class EnemyController : MonoBehaviour
             rigidbody.velocity = Vector2.zero;
 
             //Attack the player
+            EnemyAttack();
 
         }
     }
@@ -106,6 +112,19 @@ public class EnemyController : MonoBehaviour
         {
             Debug.Log("We hit " + player.name);
             player.GetComponent<Player>().TakeDamage(enemyAttackDamage);
+        }
+        AttackCooldown();
+    }
+
+    private void AttackCooldown()
+    {
+        attackCooldown = true;
+        attackTimer -= Time.deltaTime;
+
+        if (intTimer <= 0 && attackCooldown)
+        {
+            attackCooldown = false;
+            attackTimer = intTimer;
         }
     }
 
