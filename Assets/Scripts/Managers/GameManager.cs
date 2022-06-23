@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        RunMenuState(currentMenuState);
     }
 
     /// <summary>
@@ -83,5 +83,32 @@ public class GameManager : MonoBehaviour
 
         // Update UI
         UIManager.instance.UpdateMenuStateUI(currentMenuState);
+    }
+
+    private void RunMenuState(MenuState newMenuState)
+	{
+        switch(newMenuState)
+        {
+            case MenuState.MainMenu:
+                break;
+            case MenuState.Select:
+                break;
+            case MenuState.CharacterCreate:
+                break;
+            case MenuState.Game:
+                // When in the game, key controls: 
+                // Esc:     Opens pause menu
+                if(Input.GetKeyDown(KeyCode.Escape))
+                    ChangeMenuState(MenuState.Pause);
+                break;
+            case MenuState.Pause:
+                // When game is paused, key controls:
+                // Esc:     Resumes the game
+                if(Input.GetKeyDown(KeyCode.Escape))
+                    ChangeMenuState(MenuState.Game);
+                break;
+            case MenuState.GameEnd:
+                break;
+        }
     }
 }

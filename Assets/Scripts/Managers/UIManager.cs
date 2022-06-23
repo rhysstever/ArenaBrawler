@@ -112,19 +112,8 @@ public class UIManager : MonoBehaviour
             case MenuState.CharacterCreate:
                 break;
             case MenuState.Game:
-                // When in the game, key controls: 
-                // Esc:     Opens pause menu
-                // Tab:     Ends the game
-                if(Input.GetKeyDown(KeyCode.Escape))
-                    GameManager.instance.ChangeMenuState(MenuState.Pause);
-                else if(Input.GetKeyDown(KeyCode.Tab))
-                    GameManager.instance.ChangeMenuState(MenuState.GameEnd);
                 break;
             case MenuState.Pause:
-                // When game is paused, key controls:
-                // Esc:     Resumes the game
-                if(Input.GetKeyDown(KeyCode.Escape))
-                    GameManager.instance.ChangeMenuState(MenuState.Game);
                 break;
             case MenuState.GameEnd:
                 break;
