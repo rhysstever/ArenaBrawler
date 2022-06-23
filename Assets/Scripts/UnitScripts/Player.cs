@@ -25,17 +25,8 @@ public class Player : Unit
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game
-            && Input.GetKeyDown(KeyCode.E))
-            CollectResources(50, 0);
-
-        // Check if the player can level up
-        // TODO: restrict this check to happen only after a wave is completed
-        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game
-            && currentLevels.Count > 0
-            && CanLevelUp())
-            LevelUp(currentLevels[0]);
-	}
+        CheckTestInput();
+    }
 
     /// <summary>
     /// Clears all of the stats of the player
@@ -209,5 +200,28 @@ public class Player : Unit
     {
         int currentLevel = currentLevels.Count;
         return currentXP >= LevelManager.instance.XPToLevel(currentLevel);
+    }
+
+    /// <summary>
+    /// Check for input, mainly used for testing
+    /// TODO: Delete this when all checks are no longer needed
+    /// </summary>
+    private void CheckTestInput()
+    {
+        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game)
+        {
+            // E - Give xp
+            if(Input.GetKeyDown(KeyCode.E))
+                CollectResources(50, 0);
+            // R - Give xp
+            else if(Input.GetKeyDown(KeyCode.R))
+                TakeDamage(5);
+
+            // Check if the player can level up
+            // TODO: restrict this check to happen only after a wave is completed
+            if(currentLevels.Count > 0
+                && CanLevelUp())
+                LevelUp(currentLevels[0]);
+        }
     }
 }

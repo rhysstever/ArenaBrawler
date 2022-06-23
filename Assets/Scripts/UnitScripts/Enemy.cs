@@ -30,7 +30,11 @@ public class Enemy : Unit
     // Update is called once per frame
     void Update()
     {
-        
+        // Test code to hurt the enemy
+        // TODO: Remove when attacking is done
+        if(GameManager.instance.GetCurrentMenuState() == MenuState.Game
+            && Input.GetKeyDown(KeyCode.T))
+            TakeDamage(5);
     }
 
     /// <summary>
@@ -75,6 +79,7 @@ public class Enemy : Unit
         {
             EnemyDeath();
             LevelManager.instance.player.GetComponent<Player>().CollectResources(xpAmount, goldAmount);
+            GameManager.instance.ChangeMenuState(MenuState.GameEnd);
         }
 	}
 
